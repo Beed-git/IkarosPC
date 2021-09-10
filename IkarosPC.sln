@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IkarosPC", "IkarosPC\IkarosPC.csproj", "{1F49FAB3-85EC-4074-82ED-BA59CEFEE473}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IkarosPC.Tests", "IkarosPC.Tests\IkarosPC.Tests.csproj", "{221D4137-59C4-437B-9CFE-27C06C84A16D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F49FAB3-85EC-4074-82ED-BA59CEFEE473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F49FAB3-85EC-4074-82ED-BA59CEFEE473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F49FAB3-85EC-4074-82ED-BA59CEFEE473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F49FAB3-85EC-4074-82ED-BA59CEFEE473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{221D4137-59C4-437B-9CFE-27C06C84A16D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221D4137-59C4-437B-9CFE-27C06C84A16D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221D4137-59C4-437B-9CFE-27C06C84A16D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221D4137-59C4-437B-9CFE-27C06C84A16D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32E39D67-2915-4B99-9A2A-980908AEEA64}
+	EndGlobalSection
+EndGlobal
