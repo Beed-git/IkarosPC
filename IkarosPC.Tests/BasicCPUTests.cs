@@ -43,6 +43,18 @@ namespace IkarosPC.Tests
         }
 
         [Test]
+        public void TestCanPushOntoStack()
+        {
+            
+        }
+
+        [Test]
+        public void TestCanPopOffStack()
+        {
+
+        }
+
+        [Test]
         public void TestFlagsRegister()
         {
             throw new NotImplementedException("Haven't figured out how to do this yet.");
