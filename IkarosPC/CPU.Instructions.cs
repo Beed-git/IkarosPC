@@ -8,14 +8,12 @@ namespace IkarosPC
 {
     public partial class CPU
     {
-        void HandleControlFunctions(ushort opcode)
+        void HandleOpcode(ushort opcode)
         {
             byte nibble = (byte)((opcode & 0xFF00) >> 8);
 
             switch (nibble)
             {
-                // Control instructions (0x0NNN).
-
                 // No operation occurs.
                 // 1 byte.
                 // e.g. NOP
@@ -51,7 +49,7 @@ namespace IkarosPC
                 case 0x04:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
-                        
+
                         _registers.SP++;
                         _registers[rX] = _memory[_registers.SP]; ;
                     }
@@ -64,19 +62,6 @@ namespace IkarosPC
                 // Returns from a subroutine.
                 // 1 byte.
                 // e.g. RET
-                default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
-            }
-        }
-
-        void HandleMoveFunctions(ushort opcode)
-        {
-            byte nibble = (byte)((opcode & 0xFF00) >> 8);
-
-            switch (nibble)
-            {
-                // Mov instructions. (0x1NNN)
-                // In general format is INS_NAME *Area 1* *Area 2*
-                // Value of *Area 1* goes into *Area 2*
 
                 // Moves value from first register to second register.
                 // 1 byte.
@@ -135,22 +120,6 @@ namespace IkarosPC
                         _registers.PC++;
                     }
                     break;
-
-                default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
-            }
-        }
-
-        void HandleMathFunctions(ushort opcode)
-        {
-            byte nibble = (byte)((opcode & 0xFF00) >> 8);
-
-            switch (nibble)
-            {
-                // Math functions. (2NNN & 3NNN)
-                // Most functions will store the value in the special Accumulator register.
-                // Note: Subtractions take the left value from the right.
-                // e.g SUB X Y will subtract x from y.
-
                 // Adds the values of the first and second register and puts the result in the accumulator.
                 // ZCN: Z C 0
                 // 1 byte.
@@ -331,18 +300,7 @@ namespace IkarosPC
                 // ZCN: Z 0 0
                 // 2 bytes.
                 // e.g. XOR X 0x1234
-                
 
-                default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
-            }
-        }
-
-        void HandleJumpFunctions(ushort opcode)
-        {
-            byte nibble = (byte)((opcode & 0xFF00) >> 8);
-
-            switch (nibble)
-            {
                 // Sets the program counter to the value stored in the register.
                 // 1 byte.
                 // e.g. J X
@@ -357,7 +315,7 @@ namespace IkarosPC
                 // e.g. JC 0xFF00
                 // e.g. JS X
                 // e.g. JS 0xFF00
-                
+
                 // e.g. JNZ X
                 // e.g. JNZ 0xFF00
                 // e.g. JNC X
@@ -369,14 +327,4 @@ namespace IkarosPC
             }
         }
     }
-    // Template
-    //void HandleRegisterFunctions(ushort opcode)
-    //{
-    //    byte nibble = (byte)(opcode & 0xFF00);
-
-    //    switch (nibble)
-    //    {
-    //        default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
-    //    }
-    //}
 }

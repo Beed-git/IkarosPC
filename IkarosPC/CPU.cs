@@ -32,31 +32,7 @@ namespace IkarosPC
             var opcode = _memory[_registers.PC];
             _registers.PC++;
 
-            Execute(opcode);
-        }
-
-        protected void Execute(ushort opcode)
-        {
-            byte nibble = (byte)((opcode & 0xFF00) >> 8);
-
-            switch (nibble)
-            {
-                case var n when (n >= 0x00 && n < 0x05):
-                    HandleControlFunctions(opcode); 
-                    break;
-                case var n when (n >= 0x10 && n < 0x15):
-                    HandleMoveFunctions(opcode); 
-                    break;
-                case var n when (n >= 0x20 && n < 0x30):
-                    HandleMathFunctions(opcode); 
-                    break;
-                case var n when (n >= 0x30 && n < 0x40):
-                    HandleJumpFunctions(opcode);
-                    break;
-
-                default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
-            }
-
+            HandleOpcode(opcode);
         }
     }
 }
