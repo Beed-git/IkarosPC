@@ -65,7 +65,7 @@ namespace IkarosPC
             
             Push(_registers.Flags);
             Push(_registers.PC);
-            Push(_registers.StackFrameSize++);
+            Push((ushort)(_registers.StackFrameSize + 1));
 
             _registers.FP = _registers.SP;
             _registers.StackFrameSize = 0;
@@ -76,6 +76,7 @@ namespace IkarosPC
             _registers.SP = _registers.FP;
 
             _registers.StackFrameSize = Pop();
+            var previousStackFrameSize = _registers.StackFrameSize;
 
             _registers.PC = Pop();
             _registers.Flags = Pop();
@@ -95,7 +96,7 @@ namespace IkarosPC
                 Pop();
             }
 
-            _registers.FP += _registers.StackFrameSize;
+            _registers.FP += previousStackFrameSize;
         }
     }
 }

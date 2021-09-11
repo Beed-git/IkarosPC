@@ -32,5 +32,13 @@ namespace IkarosPC
                 _memory[i] = data[i];
             }
         }
+
+        public void SetSubroutineAtAddress(ushort offset, ushort[] data)
+        {
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                _memory[i + offset] = data[i];
+            }
+        }
     }
 }

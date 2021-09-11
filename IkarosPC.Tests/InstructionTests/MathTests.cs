@@ -493,7 +493,7 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x000A);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0xA000);
         }
-        
+
         [Test]
         public void TestMultiplyTwoRegistersFlags()
         {
@@ -552,8 +552,23 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Negative == false);
         }
 
-        //
-        // WITH DIV CHECK DIVIDE BY ZERO!!!!
-        //
+        [Test]
+        public void TestAddFromAccumulator()
+        {
+            // Add with accumulator as input.
+            Assert.IsTrue(1 == 2);
+        }
+
+        [Test]
+        public void TestSubFromAccumulator()
+        {
+            Assert.IsTrue(1 == 2);
+        }
+
+        [Test]
+        public void TestDivideByZero()
+        {
+            Assert.IsTrue(1 == 2);
+        }
     }
 }

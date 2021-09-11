@@ -70,11 +70,9 @@ namespace IkarosPC
                 // e.g. CALL X:
                 case 0x06:
                     {
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-                        _registers.PC++;
-
                         SaveStackState();
 
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
                         _registers.PC = _registers[rX];
                     }
                     break;
