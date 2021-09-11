@@ -24,11 +24,19 @@ namespace IkarosPC
                 // 1 byte
                 // e.g. STOP
                 
-                // Pops a value onto the stack.
+                // Pops the value of a register onto the stack.
                 // 1 byte.
                 // e.g. POP X
 
-                // Pushs a value of the stack.
+                // Pop a literal value onto the stack.
+                // 2 bytes
+                // e.g. POP 0x1234
+
+                // Pushs the value of a register off the stack.
+                // 1 byte.
+                // e.g. PUSH X
+
+                // Pushs a literal value off the stack.
                 // 1 byte.
                 // e.g. PUSH X
 
