@@ -43,6 +43,114 @@ namespace IkarosPC.Tests
         }
 
         [Test]
+        public void TestCanPushOntoStack()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Store 0x1234 in Register A
+                0x1300, 0x1234,
+                // Push value onto stack.
+                0x0200,
+                // Push literal onto stack (Should ignore last two values)
+                0x03FF, 0xFFEE
+            });
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFFEE);
+
+        }
+
+        [Test]
+        public void TestCanPopOffStack()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Push literal onto stack
+                0x0300, 0x1234,
+                0x03FF, 0xFF00,
+                // Pop value off stack and store in register B
+                0x0410,
+                // Pop value off stack and strore in register A
+                0x040F,
+                // Push literal back onto stack
+                0x0300, 0xAAAA,
+                // Push literal back onto stack
+                0x0300, 0xBBBB
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.A == 0);
+            Assert.IsTrue(_cpu.Registers.B == 0);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.A == 0);
+            Assert.IsTrue(_cpu.Registers.B == 0xFF00);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0xFF00);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0xFF00);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0xAAAA);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0xFF00);
+            Assert.IsTrue(_memory[ushort.MaxValue] == 0xAAAA);
+            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xBBBB);
+
+        }
+
+        [Test]
         public void TestFlagsRegister()
         {
             throw new NotImplementedException("Haven't figured out how to do this yet.");

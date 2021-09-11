@@ -41,7 +41,7 @@ namespace IkarosPC
 
             switch (nibble)
             {
-                case var n when (n >= 0x00 && n < 0x01):
+                case var n when (n >= 0x00 && n < 0x05):
                     HandleControlFunctions(opcode); 
                     break;
                 case var n when (n >= 0x10 && n < 0x15):

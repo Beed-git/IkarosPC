@@ -10,7 +10,7 @@ namespace IkarosPC
     {
         void HandleControlFunctions(ushort opcode)
         {
-            byte nibble = (byte)(opcode & 0x00FF);
+            byte nibble = (byte)((opcode & 0xFF00) >> 8);
 
             switch (nibble)
             {
@@ -19,26 +19,43 @@ namespace IkarosPC
                 // No operation occurs.
                 // 1 byte.
                 // e.g. NOP
-                case 0: break;
+                case 0x00: break;
                 // Stop execution from occuring.
                 // 1 byte
                 // e.g. STOP
-                
-                // Pops the value of a register onto the stack.
+
+                // Pushs the value of a register on the stack.
+                // 1 byte.
+                // e.g. PUSH X
+                case 0x02:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        _memory[_registers.SP] = _registers[rX];
+                        _registers.SP--;
+                    }
+                    break;
+                // Pushs a literal value on the stack.
+                // 2 bytes.
+                // e.g. PUSH 0x1234
+                case 0x03:
+                    {
+                        _memory[_registers.SP] = _memory[_registers.PC];
+                        _registers.PC++;
+                        _registers.SP--;
+                    }
+                    break;
+                // Pops the value of a register off the stack.
                 // 1 byte.
                 // e.g. POP X
-
-                // Pop a literal value onto the stack.
-                // 2 bytes
-                // e.g. POP 0x1234
-
-                // Pushs the value of a register off the stack.
-                // 1 byte.
-                // e.g. PUSH X
-
-                // Pushs a literal value off the stack.
-                // 1 byte.
-                // e.g. PUSH X
+                case 0x04:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        
+                        _registers.SP++;
+                        _registers[rX] = _memory[_registers.SP]; ;
+                    }
+                    break;
 
                 // Calls a subroutine. The result of the subroutine should be put into the accumulator. 
                 // 2 bytes.

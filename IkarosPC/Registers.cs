@@ -31,8 +31,8 @@ namespace IkarosPC
             FP = 0;
 
             // Set stack to top of memory.
-            SP = ushort.MaxValue - 1;
-            FP = ushort.MaxValue - 1;
+            SP = ushort.MaxValue;
+            FP = ushort.MaxValue;
 
             Zero = false;
             Carry = false;
