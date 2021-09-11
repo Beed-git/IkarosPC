@@ -187,13 +187,13 @@ namespace IkarosPC
                         var literal = _memory[_registers.PC];
                         _registers.PC++;
 
-                        var result = literal - _registers[rX];
+                        var result = _registers[rX] - literal;
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result < 0;
                         Registers.Negative = true;
 
-                        _registers.Accumulator = (ushort)(literal - _registers[rX]);
+                        _registers.Accumulator = (ushort)(_registers[rX] - literal);
                     }
                     break;
                 // Subtracts the literal value from the value of the register and stores the result in the accumulator.
@@ -207,13 +207,13 @@ namespace IkarosPC
                         var literal = _memory[_registers.PC];
                         _registers.PC++;
 
-                        var result = _registers[rX] - literal;
+                        var result = literal - _registers[rX];
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result < 0;
                         Registers.Negative = true;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] - literal);
+                        _registers.Accumulator = (ushort)(literal - _registers[rX]);
                     }
                     break;
                 // Multiplies the values of the two registers and stores the result in the accumulator.

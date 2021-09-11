@@ -153,7 +153,66 @@ namespace IkarosPC.Tests
         [Test]
         public void TestFlagsRegister()
         {
-            throw new NotImplementedException("Haven't figured out how to do this yet.");
+            // Get flags
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+
+            _cpu.Registers.Zero = true;
+            _cpu.Registers.Carry = false;
+            _cpu.Registers.Negative = false;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000100);
+
+            _cpu.Registers.Zero = false;
+            _cpu.Registers.Carry = true;
+            _cpu.Registers.Negative = false;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000010);
+
+            _cpu.Registers.Zero = false;
+            _cpu.Registers.Carry = false;
+            _cpu.Registers.Negative = true;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000001);
+
+            _cpu.Registers.Zero = true;
+            _cpu.Registers.Carry = false;
+            _cpu.Registers.Negative = true;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000101);
+
+            _cpu.Registers.Zero = true;
+            _cpu.Registers.Carry = true;
+            _cpu.Registers.Negative = true;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
+
+            _cpu.Registers.Zero = true;
+            _cpu.Registers.Carry = true;
+            _cpu.Registers.Negative = false;
+
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000110);
+
+            // Set flags
+            _cpu.Registers.Flags = 0b00000101;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000101);
+
+            _cpu.Registers.Flags = 0b00000111;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
+
+            _cpu.Registers.Flags = 0b00000100;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000100);
+
+            _cpu.Registers.Flags = 0b00000001;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000001);
+
+            _cpu.Registers.Flags = 0b10101010;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000010);
+
+            _cpu.Registers.Flags = 0b11111111;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
+
+            _cpu.Registers.Flags = 0b11111000;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00000000);
         }
     }
 }

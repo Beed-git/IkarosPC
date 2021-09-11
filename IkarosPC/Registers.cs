@@ -98,9 +98,9 @@ namespace IkarosPC
             {
                 int u = 0;
 
+                u += Zero ? 0b0100 : 0;
+                u += Carry ? 0b0010 : 0;
                 u += Negative ? 0b0001 : 0;
-                u += Negative ? 0b0010 : 0;
-                u += Negative ? 0b0100 : 0;
 
                 return (ushort)u;
             }
