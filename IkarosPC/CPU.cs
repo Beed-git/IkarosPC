@@ -34,5 +34,18 @@ namespace IkarosPC
 
             HandleOpcode(opcode);
         }
+
+        // Instruction helpers
+        public void Push(ushort value)
+        {
+            _memory[_registers.SP] = value;
+            _registers.SP--;
+        }
+
+        public ushort Pop()
+        {
+            _registers.SP++;
+            return _memory[_registers.SP];
+        }
     }
 }

@@ -29,8 +29,7 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        _memory[_registers.SP] = _registers[rX];
-                        _registers.SP--;
+                        Push(_registers[rX]);
                     }
                     break;
                 // Pushs a literal value on the stack.
@@ -38,9 +37,8 @@ namespace IkarosPC
                 // e.g. PUSH 0x1234
                 case 0x03:
                     {
-                        _memory[_registers.SP] = _memory[_registers.PC];
+                        Push(_memory[_registers.PC]);
                         _registers.PC++;
-                        _registers.SP--;
                     }
                     break;
                 // Pops the value of a register off the stack.
@@ -50,14 +48,24 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        _registers.SP++;
-                        _registers[rX] = _memory[_registers.SP]; ;
+                        _registers[rX] = Pop();
                     }
                     break;
-
-                // Calls a subroutine. The result of the subroutine should be put into the accumulator. 
+                // Calls a subroutine from a literal value. 
                 // 2 bytes.
                 // e.g. CALL func_name:
+                //case 0x05:
+                //    {
+                //        var literal = _memory[_registers.PC];
+                //        _registers.PC++;
+
+                //        // Save state to stack
+
+                //    }
+                //    break
+                // Calls a subroutine from a register
+                // 2 bytes.
+                // e.g. CALL X:
 
                 // Returns from a subroutine.
                 // 1 byte.
