@@ -15,6 +15,8 @@ namespace IkarosPC
         {
             _memory = memory;
             _registers = new Registers();
+
+            _registers.Reset();
         }
 
 

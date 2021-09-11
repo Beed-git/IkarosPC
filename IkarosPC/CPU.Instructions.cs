@@ -17,9 +17,28 @@ namespace IkarosPC
                 // Control instructions (0x0NNN).
 
                 // No operation occurs.
-                // 1 byte
+                // 1 byte.
                 // e.g. NOP
                 case 0: break;
+                // Stop execution from occuring.
+                // 1 byte
+                // e.g. STOP
+                
+                // Pops a value onto the stack.
+                // 1 byte.
+                // e.g. POP X
+
+                // Pushs a value of the stack.
+                // 1 byte.
+                // e.g. PUSH X
+
+                // Calls a subroutine. The result of the subroutine should be put into the accumulator. 
+                // 2 bytes.
+                // e.g. CALL func_name:
+
+                // Returns from a subroutine.
+                // 1 byte.
+                // e.g. RET
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
         }
@@ -163,31 +182,11 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)(_registers[rX] - _registers[rY]);
                     }
                     break;
-                // Subtracts the literal value from the value of the register and stores the result in the accumulator.
-                // ZCN: Z C 1
-                // 2 bytes.
-                // e.g. SUB 0x1234 X
-                case 0x23:
-                    {
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-
-                        var literal = _memory[_registers.PC];
-                        _registers.PC++;
-
-                        var result = _registers[rX] - literal;
-
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result < 0;
-                        Registers.Negative = true;
-
-                        _registers.Accumulator = (ushort)(_registers[rX] - literal);
-                    }
-                    break;
                 // Subtracts the value of the register from the literal value and stores the result in the accumulator.
                 // ZCN: Z C 1
                 // 2 bytes.
                 // e.g. SUB X 0x1234
-                case 0x24:
+                case 0x23:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
@@ -201,6 +200,26 @@ namespace IkarosPC
                         Registers.Negative = true;
 
                         _registers.Accumulator = (ushort)(literal - _registers[rX]);
+                    }
+                    break;
+                // Subtracts the literal value from the value of the register and stores the result in the accumulator.
+                // ZCN: Z C 1
+                // 2 bytes.
+                // e.g. SUB 0x1234 X
+                case 0x24:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var literal = _memory[_registers.PC];
+                        _registers.PC++;
+
+                        var result = _registers[rX] - literal;
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = result < 0;
+                        Registers.Negative = true;
+
+                        _registers.Accumulator = (ushort)(_registers[rX] - literal);
                     }
                     break;
                 // Multiplies the values of the two registers and stores the result in the accumulator.
@@ -256,6 +275,38 @@ namespace IkarosPC
                 // 2 bytes.
                 // e.g. MOD 0x1234 X
 
+                // start from 0x30
+
+                // Ands the values of the two registers and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 1 byte.
+                // e.g. AND X Y
+
+                // Ands the literal value with the value in the specified register and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 2 bytes.
+                // e.g. AND X 0x1234
+
+                // Ors the values of the two registers and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 1 byte.
+                // e.g. OR X Y
+
+                // Ors the literal value with the value in the specified register and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 2 bytes.
+                // e.g. OR X 0x1234
+
+                // Xors the values of the two registers and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 1 byte.
+                // e.g. XOR X Y
+
+                // Xors the literal value with the value in the specified register and stores the result in the accumulator.
+                // ZCN: Z 0 0
+                // 2 bytes.
+                // e.g. XOR X 0x1234
+                
 
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
@@ -275,6 +326,13 @@ namespace IkarosPC
                 // 2 bytes.
                 // e.g. J 0xFF00
 
+                // e.g. JZ X
+                // e.g. JZ 0xFF00
+                // e.g. JC X
+                // e.g. JC 0xFF00
+                // e.g. JS X
+                // e.g. JS 0xFF00
+                
                 // e.g. JNZ X
                 // e.g. JNZ 0xFF00
                 // e.g. JNC X

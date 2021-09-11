@@ -10,15 +10,29 @@ namespace IkarosPC
     {
         private ushort[] _registers;
 
+        private ushort _pc;
+        private ushort _sp;
+        private ushort _fp;
+
         public Registers()
         {
-            _registers = new ushort[10];
+            // Represents the 8 general-purpose registers plus the accumulator.
+            _registers = new ushort[9];
         }
 
         public void Reset()
         {
-            // Clear registers
+            // Clear general registers.
             Array.Fill<ushort>(_registers, 0);
+
+            // Clear special registers.
+            PC = 0;
+            SP = 0;
+            FP = 0;
+
+            // Set stack to top of memory.
+            SP = ushort.MaxValue - 1;
+            FP = ushort.MaxValue - 1;
 
             Zero = false;
             Carry = false;
@@ -53,17 +67,31 @@ namespace IkarosPC
             set => _registers[8] = value;
         }
 
+        // Program counter.
         public ushort PC
         {
-            get => _registers[9];
-            set => _registers[9] = value;
+            get => _pc;
+            set => _pc = value;
+        }
+
+        // Stack pointer.
+        public ushort SP
+        {
+            get => _sp;
+            set => _sp = value;
+        }
+
+        // Frame pointer.
+        public ushort FP
+        {
+            get => _fp;
+            set => _fp = value;
         }
 
         /// <summary>
-        /// Bit map
+        /// Flags register.
         /// 0000 0ZCN
         /// </summary>
-        /// 
         public ushort Flags
         {
             get
