@@ -54,22 +54,38 @@ namespace IkarosPC
                 // Calls a subroutine from a literal value. 
                 // 2 bytes.
                 // e.g. CALL func_name:
-                //case 0x05:
-                //    {
-                //        var literal = _memory[_registers.PC];
-                //        _registers.PC++;
+                case 0x05:
+                    {
+                        var literal = _memory[_registers.PC];
+                        _registers.PC++;
 
-                //        // Save state to stack
+                        // Save state to stack
+                        SaveStackState();
 
-                //    }
-                //    break
+                        _registers.PC = literal;
+                    }
+                    break;
                 // Calls a subroutine from a register
                 // 2 bytes.
                 // e.g. CALL X:
+                case 0x06:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        _registers.PC++;
 
+                        SaveStackState();
+
+                        _registers.PC = _registers[rX];
+                    }
+                    break;
                 // Returns from a subroutine.
                 // 1 byte.
                 // e.g. RET
+                case 0x07:
+                    {
+                        LoadStackState();
+                    }
+                    break;
 
                 // Moves value from first register to second register.
                 // 1 byte.

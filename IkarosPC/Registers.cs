@@ -13,6 +13,7 @@ namespace IkarosPC
         private ushort _pc;
         private ushort _sp;
         private ushort _fp;
+        private ushort _stackFrameSize;
 
         public Registers()
         {
@@ -33,6 +34,9 @@ namespace IkarosPC
             // Set stack to top of memory.
             SP = ushort.MaxValue;
             FP = ushort.MaxValue;
+
+            // Reset stack frame pointer.
+            StackFrameSize = 0;
 
             Zero = false;
             Carry = false;
@@ -57,6 +61,8 @@ namespace IkarosPC
                 _registers[i] = value;
             }
         }
+
+        public int GeneralRegisterCount => _registers.Length;
 
         // Special Registers
 
@@ -86,6 +92,13 @@ namespace IkarosPC
         {
             get => _fp;
             set => _fp = value;
+        }
+
+        // Tracks the size of the current stack frame. Should never be touched by the user. Shouldn't be used outside of Pop, Push, LoadState, and SaveState.
+        public ushort StackFrameSize
+        {
+            get => _stackFrameSize;
+            set => _stackFrameSize = value;
         }
 
         /// <summary>
