@@ -15,10 +15,17 @@ namespace IkarosPC
         private ushort _fp;
         private ushort _stackFrameSize;
 
+        private ushort _topOfStack;
+
+        public ushort TopOfStack => _topOfStack;
+        public int GeneralRegisterCount => _registers.Length;
+
         public Registers()
         {
             // Represents the 8 general-purpose registers plus the accumulator.
             _registers = new ushort[9];
+
+            _topOfStack = 0xC000 - 1;
         }
 
         public void Reset()
@@ -32,8 +39,8 @@ namespace IkarosPC
             FP = 0;
 
             // Set stack to top of memory.
-            SP = ushort.MaxValue;
-            FP = ushort.MaxValue;
+            SP = _topOfStack;
+            FP = _topOfStack;
 
             // Reset stack frame pointer.
             StackFrameSize = 0;
@@ -61,8 +68,6 @@ namespace IkarosPC
                 _registers[i] = value;
             }
         }
-
-        public int GeneralRegisterCount => _registers.Length;
 
         // Special Registers
 

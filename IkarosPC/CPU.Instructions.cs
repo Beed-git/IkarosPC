@@ -42,6 +42,7 @@ namespace IkarosPC
                 case 0x03:
                     {
                         Push(_memory[_registers.PC]);
+
                         _registers.PC++;
                     }
                     break;

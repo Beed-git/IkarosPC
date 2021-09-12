@@ -58,29 +58,29 @@ namespace IkarosPC.Tests
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 2);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 3);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 1);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0x1234);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 5);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 2);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFFEE);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0x1234);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xFFEE);
 
         }
 
@@ -106,47 +106,47 @@ namespace IkarosPC.Tests
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 4);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 2);
             Assert.IsTrue(_cpu.Registers.A == 0);
             Assert.IsTrue(_cpu.Registers.B == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0x1234);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xFF00);
             
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 5);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 1);
             Assert.IsTrue(_cpu.Registers.A == 0);
             Assert.IsTrue(_cpu.Registers.B == 0xFF00);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0x1234);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xFF00);
             
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0xFF00);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0x1234);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0x1234);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xFF00);
             
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 8);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 1);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 1);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0xFF00);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0xAAAA);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xFF00);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0xAAAA);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xFF00);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 10);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 2);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0xFF00);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0xAAAA);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xBBBB);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0xAAAA);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xBBBB);
 
         }
 

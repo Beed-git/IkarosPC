@@ -13,8 +13,8 @@ namespace IkarosPC.Tests
         {
             // Special registers.
             Assert.IsTrue(cpu.Registers.PC == 0);
-            Assert.IsTrue(cpu.Registers.SP == ushort.MaxValue);
-            Assert.IsTrue(cpu.Registers.FP == ushort.MaxValue);
+            Assert.IsTrue(cpu.Registers.SP == cpu.Registers.TopOfStack);
+            Assert.IsTrue(cpu.Registers.FP == cpu.Registers.TopOfStack);
             Assert.IsTrue(cpu.Registers.Accumulator == 0);
             Assert.IsTrue(cpu.Registers.Flags == 0);
 

@@ -109,15 +109,15 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Accumulator == 0xF123);
 
             Assert.IsTrue(_cpu.Registers.PC == 29);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 5);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 5);
 
             // First subroutine call
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 0x3000);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 16);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 16);
 
             _cpu.Step();
             _cpu.Step();
@@ -130,8 +130,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state with values replaced
             Assert.IsTrue(_cpu.Registers.PC == 0x3010);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 19);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 19);
 
             Assert.IsTrue(_cpu.Registers.A == 0x11FF);
             Assert.IsTrue(_cpu.Registers.B == 0x22FF);
@@ -143,8 +143,8 @@ namespace IkarosPC.Tests.InstructionTests
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 0x5000);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 30);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 30);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 30);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 30);
 
             _cpu.Step();
             _cpu.Step();
@@ -154,8 +154,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state
             Assert.IsTrue(_cpu.Registers.PC == 0x5009);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 30);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 32);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 30);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 32);
 
             Assert.IsTrue(_cpu.Registers.A == 0x0003);
             Assert.IsTrue(_cpu.Registers.B == 0x0002);
@@ -166,8 +166,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state is back to previous
             Assert.IsTrue(_cpu.Registers.PC == 0x3012);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 18);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 18);
 
             Assert.IsTrue(_cpu.Registers.A == 0x11FF);
             Assert.IsTrue(_cpu.Registers.B == 0x22FF);
@@ -180,8 +180,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state
             Assert.IsTrue(_cpu.Registers.PC == 0x3015);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 18);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 18);
 
             Assert.IsTrue(_cpu.Registers.A == 0x0005);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0008);
@@ -204,8 +204,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0008);
 
             Assert.IsTrue(_cpu.Registers.PC == 31);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 4);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 4);
         }
 
         [Test]
@@ -299,15 +299,15 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Accumulator == 0xF123);
 
             Assert.IsTrue(_cpu.Registers.PC == 29);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 5);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 5);
 
             // First subroutine
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 0x4000);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 16);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 16);
 
             _cpu.Step();
             _cpu.Step();
@@ -321,8 +321,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state with values replaced
             Assert.IsTrue(_cpu.Registers.PC == 0x4012);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 19);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 19);
 
             Assert.IsTrue(_cpu.Registers.A == 0x11FF);
             Assert.IsTrue(_cpu.Registers.B == 0x22FF);
@@ -335,8 +335,8 @@ namespace IkarosPC.Tests.InstructionTests
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 0x2000);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 30);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 30);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack  - 30);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 30);
 
             _cpu.Step();
             _cpu.Step();
@@ -346,8 +346,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state
             Assert.IsTrue(_cpu.Registers.PC == 0x2009);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 30);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 32);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 30);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 32);
 
             Assert.IsTrue(_cpu.Registers.A == 0x0003);
             Assert.IsTrue(_cpu.Registers.B == 0x0002);
@@ -358,8 +358,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state is back to previous
             Assert.IsTrue(_cpu.Registers.PC == 0x4013);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 18);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 18);
 
             Assert.IsTrue(_cpu.Registers.A == 0x11FF);
             Assert.IsTrue(_cpu.Registers.B == 0x22FF);
@@ -373,8 +373,8 @@ namespace IkarosPC.Tests.InstructionTests
 
             // Check state
             Assert.IsTrue(_cpu.Registers.PC == 0x4016);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue - 16);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 18);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack - 16);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 18);
 
             Assert.IsTrue(_cpu.Registers.A == 0x0005);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0008);
@@ -397,8 +397,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0008);
 
             Assert.IsTrue(_cpu.Registers.PC == 30);
-            Assert.IsTrue(_cpu.Registers.FP == ushort.MaxValue);
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 4);
+            Assert.IsTrue(_cpu.Registers.FP == _cpu.Registers.TopOfStack);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 4);
         }
 
         [Test]

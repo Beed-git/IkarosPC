@@ -47,7 +47,7 @@ namespace IkarosPC
         // Instruction helpers
         public void Push(ushort value)
         {
-            _memory[_registers.SP] = value;
+            _memory.Stack[_registers.SP] = value;
             _registers.SP--;
 
             _registers.StackFrameSize++;
@@ -58,7 +58,7 @@ namespace IkarosPC
             _registers.StackFrameSize--;
 
             _registers.SP++;
-            return _memory[_registers.SP];
+            return _memory.Stack[_registers.SP];
         }
 
         public void SaveStackState()

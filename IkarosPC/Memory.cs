@@ -9,17 +9,37 @@ namespace IkarosPC
     public class Memory
     {
         private ushort[] _memory;
+        private ushort[] _stack;
 
+        public ushort TopOfStack => 0xFFFE;
+
+        /// <summary>
+        /// ~65kb regular memory
+        /// ~49kb stack memory
+        /// </summary>
         public Memory()
         {
-            _memory = new ushort[65536];
+            _memory = new ushort[0x10000];
+            _stack = new ushort[0xC000];
         }
 
         public ushort this[ushort i]
         {
-            get => _memory[i];
+            get
+            {
+                // 0xFFFF will always return from the 0xFFFF register (memory control switch, will change between 'cartridges', regular ram, vram, and stack ram.
+                if (i == 0xFFFF)
+                {
+                    return _memory[i];
+                }
+
+                return _memory[i];
+            }
             set => _memory[i] = value;
         }
+
+        // Not the biggest fan of this.
+        public ushort[] Stack => _stack;
 
         /// <summary>
         /// Fills memory from the 0th byte to the length of data.
