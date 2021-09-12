@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IkarosPC
 {
-    class Display
+    public class Display
     {
         private Vram _vram;
 

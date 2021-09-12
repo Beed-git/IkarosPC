@@ -1,19 +1,29 @@
-﻿using SFML.Graphics;
+﻿using NUnit.Framework;
+using SFML.Graphics;
 using SFML.Window;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace IkarosPC
+namespace IkarosPC.Tests.MiniProgramTests
 {
-    class Program
+    class FillScreenTest
     {
-        static CPU _cpu;
-        static Memory _memory;
+        Memory _memory;
+        CPU _cpu;
 
-        static void Main(string[] args)
+        [SetUp]
+        public void Setup()
         {
             _memory = new Memory();
+            _cpu = new CPU(_memory);
+        }
 
+        [Test]
+        public void FillScreen()
+        {
             _memory.SetInitialMemory(new ushort[]
             {
                 // Address of ram-switcher.
@@ -33,11 +43,11 @@ namespace IkarosPC
                 0xF010, 0x0008,
                 // Final write yellow at address
                 0x1221,
+                // Switch back to normal ram.
+                0x1400, 0x0000,
                 // Stop
                 0x0100
             });
-
-            _cpu = new CPU(_memory);
 
             var display = new Display(_memory.Vram);
 
@@ -51,21 +61,25 @@ namespace IkarosPC
                 running = false;
             };
 
-            var timer = new Stopwatch();
+            var timer = new System.Diagnostics.Stopwatch();
             timer.Start();
 
             while (running)
             {
-
                 _cpu.Step();
 
                 if (timer.ElapsedMilliseconds > (1 / 60))
                 {
+                    if (_memory.Ram[_cpu.Registers.PC - 1] == 0x0100 && _memory.Ram[_cpu.Registers.PC] == 0)
+                        running = false;
+
                     display.Handle(window);
 
                     timer.Restart();
                 }
             }
+
+            Assert.IsTrue(_memory.Vram.GetScreen().All(s => s == 0xFF00));
         }
     }
 }

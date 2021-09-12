@@ -41,7 +41,7 @@ namespace IkarosPC
                 // e.g. PUSH 0x1234
                 case 0x03:
                     {
-                        Push(_memory[_registers.PC]);
+                        Push(_memory.Ram[_registers.PC]);
 
                         _registers.PC++;
                     }
@@ -61,7 +61,7 @@ namespace IkarosPC
                 // e.g. CALL func_name:
                 case 0x05:
                     {
-                        var literal = _memory[_registers.PC];
+                        var literal = _memory.Ram[_registers.PC];
                         _registers.PC++;
 
                         // Save state to stack
@@ -143,10 +143,14 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         // Ignore value at 0x000F
 
-                        _memory[_registers[rX]] = _memory[_registers.PC];
+                        _memory[_registers[rX]] = _memory.Ram[_registers.PC];
                         _registers.PC++;
                     }
                     break;
+                // Store literal value in memory specified by literal.
+                // 2 bytes.
+                // e.g. MOV 0x1234, (0xFFFF)
+
                 // Adds the values of the first and second register and puts the result in the accumulator.
                 // ZCN: Z C 0
                 // 1 byte.
@@ -173,7 +177,7 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory[_registers.PC];
+                        var literal = _memory.Ram[_registers.PC];
                         _registers.PC++;
 
                         var result = _registers[rX] + literal;
@@ -211,7 +215,7 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory[_registers.PC];
+                        var literal = _memory.Ram[_registers.PC];
                         _registers.PC++;
 
                         var result = _registers[rX] - literal;
@@ -231,7 +235,7 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory[_registers.PC];
+                        var literal = _memory.Ram[_registers.PC];
                         _registers.PC++;
 
                         var result = literal - _registers[rX];
@@ -335,7 +339,6 @@ namespace IkarosPC
                 // Sets the program counter to the literal value.
                 // 2 bytes.
                 // e.g. JUMP 0xFF00
-
                 // e.g. JZ X
                 // e.g. JZ 0xFF00
                 // e.g. JC X
@@ -357,6 +360,18 @@ namespace IkarosPC
                 // e.g. JEQ X, Y
 
                 // e.g. JEQ X, 0x1234
+                case 0xF0:
+                    {
+                        // REMOVE ME
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var literal = _memory.Ram[_registers.PC];
+                        _registers.PC++;
+
+                        if (_registers[rX] != 0)
+                            _registers.PC = literal;
+                    }
+                    break;
                 // e.g. JNEQ X, Y
                 // e.g. JNEQ X, 0x12340
 

@@ -13,6 +13,7 @@ namespace IkarosPC
         private Vram _vram;
 
         // Not the biggest fan of this.
+        public ushort[] Ram => _memory;
         public ushort[] Stack => _stack;
         public Vram Vram => _vram;
 
@@ -26,6 +27,11 @@ namespace IkarosPC
             _stack = new ushort[0xC000];
 
             _vram = new Vram();
+        }
+
+        public void Reset()
+        {
+            _memory[0xFFFF] = 0;
         }
 
         public ushort this[ushort i]
@@ -46,7 +52,21 @@ namespace IkarosPC
                     default: throw new ArgumentOutOfRangeException("Memory at this address does not exist.");
                 }
             }
-            set => _memory[i] = value;
+            set
+            {
+                if (i == 0xFFFF)
+                {
+                    _memory[i] = value;
+                }
+
+                switch (_memory[0xFFFF])
+                {
+                    case 0x0: _memory[i] = value; break;
+                    case 0x1: _stack[i] = value; break;
+                    case 0x2: _vram[i] = value; break;
+                    default: throw new ArgumentOutOfRangeException("Memory at this address does not exist.");
+                }
+            }
         }
 
         /// <summary>

@@ -31,6 +31,7 @@ namespace IkarosPC
         public void Reset()
         {
             _registers.Reset();
+            _memory.Reset();
         }
 
         public void Step()
@@ -38,7 +39,7 @@ namespace IkarosPC
             if (_stopped)
                 return;
 
-            var opcode = _memory[_registers.PC];
+            var opcode = _memory.Ram[_registers.PC];
             _registers.PC++;
 
             HandleOpcode(opcode);
