@@ -329,21 +329,36 @@ namespace IkarosPC
 
                 // Sets the program counter to the literal value.
                 // 2 bytes.
-                // e.g. J 0xFF00
+                // e.g. JUMP 0xFF00
 
                 // e.g. JZ X
                 // e.g. JZ 0xFF00
                 // e.g. JC X
                 // e.g. JC 0xFF00
-                // e.g. JS X
+
+                // e.g. JS X (maybe not this?)
                 // e.g. JS 0xFF00
 
                 // e.g. JNZ X
                 // e.g. JNZ 0xFF00
                 // e.g. JNC X
                 // e.g. JNC 0xFF00
+
                 // e.g. JNS X
                 // e.g. JNS 0xFF00
+
+                // Jump if the two registers are equal.
+                // 1 byte.
+                // e.g. JEQ X, Y
+
+                // e.g. JEQ X, 0x1234
+                // e.g. JNEQ X, Y
+                // e.g. JNEQ X, 0x12340
+
+                // Bit shift left (through carry)
+                // Bit shift right (through carry)
+                // Rotate left (through carry)
+                // Rotate right (through carry)
 
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
