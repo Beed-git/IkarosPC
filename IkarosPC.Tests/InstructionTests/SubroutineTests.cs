@@ -402,6 +402,45 @@ namespace IkarosPC.Tests.InstructionTests
         }
 
         [Test]
+        public void TestPushWithParameters()
+        {
+            _memory.SetInitialMemory(new ushort[] {
+                // Set values for general registers.
+                0x1300, 0x0001,
+                0x1310, 0x0002,
+                0x1320, 0x0003,
+                0x1330, 0x4000,
+                0x1340, 0x0005,
+                0x1350, 0x0006,
+                0x1360, 0x0007,
+                0x1370, 0x0008,
+                // Push random values to move stack
+                0x0300, 0xFFFF,
+                0x0300, 0x1234,
+                0x0300, 0x4321,
+                0x0300, 0xD9D9,
+                // Subtract register A from itself to set flags register
+                0x2200,
+                // Store random value into accumulator (Shouldn't be saved)
+                0x1380, 0xF123,
+                // Push arguments to stack
+                0x0300, 0x0125,
+                0x0300, 0x0325,
+                // Push 2 arguments to stack.
+                0x0300, 0x0002,
+                // Subroutine call. (Adds two numbers)
+                0x0500, 0x5000,
+            });
+
+            // I'm not sure how to access arguments. So for now we'll just return a failed test.
+            Assert.IsTrue(0 == 2);
+            _memory.SetSubroutineAtAddress(0x5000, new ushort[] {
+                
+            });
+
+        }
+
+        [Test]
         public void TestReturnWithoutCall()
         {
             _memory.SetInitialMemory(new ushort[]
