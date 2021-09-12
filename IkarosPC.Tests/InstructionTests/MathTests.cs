@@ -555,14 +555,118 @@ namespace IkarosPC.Tests.InstructionTests
         [Test]
         public void TestAddFromAccumulator()
         {
-            // Add with accumulator as input.
-            Assert.IsTrue(1 == 2);
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init A.
+                0x1300, 0x0010,
+                // Add A with accumulator 2 times
+                0x2008,
+                0x2008,
+                // Add accumulator to itself.
+                0x2088,
+                // Add accumulator with literal
+                0x2180, 0x0020,
+                0x2180, 0x0020,
+                // Add A to itself
+                0x2000,
+            });
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0010);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0020);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0040);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0060);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 9);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0080);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0020);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
         }
 
         [Test]
         public void TestSubFromAccumulator()
         {
-            Assert.IsTrue(1 == 2);
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init A.
+                0x1300, 0x0010,
+                // Sub accumulator from itself (0 - 0)
+                0x2288,
+                // Sub 0x10 from accumulator twice
+                0x2280,
+                0x2280,
+                // Sub literal from accumulator
+                0x2380, 0xF000,
+                // Sub accumulator from literal
+                0x2480, 0x2000,
+                // Sub accumulator from iteself.
+                0x2288,
+            });
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0xFFF0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0xFFE0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0FE0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 9);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1020);
+            Assert.IsTrue(_cpu.Registers.A == 0x0010);
         }
 
         [Test]

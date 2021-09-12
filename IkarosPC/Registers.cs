@@ -15,7 +15,7 @@ namespace IkarosPC
         private ushort _fp;
         private ushort _stackFrameSize;
 
-        private ushort _topOfStack;
+        private readonly ushort _topOfStack;
 
         public ushort TopOfStack => _topOfStack;
         public int GeneralRegisterCount => _registers.Length;
