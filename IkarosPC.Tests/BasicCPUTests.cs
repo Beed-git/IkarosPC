@@ -214,5 +214,34 @@ namespace IkarosPC.Tests
             _cpu.Registers.Flags = 0b11111000;
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000000);
         }
+
+        [Test]
+        public void TestStopped()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Store initial value in A.
+                0x1300, 0x1234,
+                // Halt execution.
+                0x0100,
+                // Try replace value of A (shouldn't run)
+                0x1300, 0xFFFF
+            });
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+        }
     }
 }

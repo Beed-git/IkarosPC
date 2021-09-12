@@ -11,16 +11,22 @@ namespace IkarosPC
         Memory _memory;
         Registers _registers;
 
+        private bool _stopped;
+
+        public Registers Registers => _registers;
+
+        public bool Stopped => _stopped;
+
         public CPU(Memory memory)
         {
             _memory = memory;
             _registers = new Registers();
 
             _registers.Reset();
+
+            _stopped = false;
         }
 
-
-        public Registers Registers => _registers;
 
         public void Reset()
         {
@@ -29,6 +35,9 @@ namespace IkarosPC
 
         public void Step()
         {
+            if (_stopped)
+                return;
+
             var opcode = _memory[_registers.PC];
             _registers.PC++;
 

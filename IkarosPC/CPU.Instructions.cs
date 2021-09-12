@@ -21,7 +21,11 @@ namespace IkarosPC
                 // Stop execution from occuring.
                 // 1 byte
                 // e.g. STOP
-
+                case 0x01:
+                    {
+                        _stopped = true;
+                    }
+                    break;
                 // Pushs the value of a register on the stack.
                 // 1 byte.
                 // e.g. PUSH X
