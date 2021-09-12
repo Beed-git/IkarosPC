@@ -7,12 +7,17 @@ namespace IkarosPC
 {
     class Program
     {
+        static CPU _cpu;
+        static Memory _memory;
+
         static void Main(string[] args)
         {
-            var vram = new Vram();
-            var display = new Display(vram);
+            _memory = new Memory();
+            _cpu = new CPU(_memory);
+            
+            var display = new Display(_memory.Vram);
 
-            var window = new RenderWindow(new VideoMode((uint)vram.ScreenX, (uint)vram.ScreenY), "Ikaros");
+            var window = new RenderWindow(new VideoMode((uint)_memory.Vram.ScreenX, (uint)_memory.Vram.ScreenY), "Ikaros");
 
             var running = true;
 

@@ -10,8 +10,11 @@ namespace IkarosPC
     {
         private ushort[] _memory;
         private ushort[] _stack;
+        private Vram _vram;
 
-        public ushort TopOfStack => 0xFFFE;
+        // Not the biggest fan of this.
+        public ushort[] Stack => _stack;
+        public Vram Vram => _vram;
 
         /// <summary>
         /// ~65kb regular memory
@@ -21,6 +24,8 @@ namespace IkarosPC
         {
             _memory = new ushort[0x10000];
             _stack = new ushort[0xC000];
+
+            _vram = new Vram();
         }
 
         public ushort this[ushort i]
@@ -33,13 +38,16 @@ namespace IkarosPC
                     return _memory[i];
                 }
 
-                return _memory[i];
+                switch (_memory[0xFFFF])
+                {
+                    case 0x0: return _memory[i];
+                    case 0x1: return _stack[i];
+                    case 0x2: return _vram[i];
+                    default: throw new ArgumentOutOfRangeException("Memory at this address does not exist.");
+                }
             }
             set => _memory[i] = value;
         }
-
-        // Not the biggest fan of this.
-        public ushort[] Stack => _stack;
 
         /// <summary>
         /// Fills memory from the 0th byte to the length of data.

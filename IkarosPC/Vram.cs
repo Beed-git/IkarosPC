@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IkarosPC
 {
-    class Vram
+    public class Vram
     {
         private int _screenX = 160;
         private int _screenY = 144;

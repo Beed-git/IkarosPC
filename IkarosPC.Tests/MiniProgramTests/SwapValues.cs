@@ -44,20 +44,20 @@ namespace IkarosPC.Tests.MiniProgramTests
 
             Assert.IsTrue(_cpu.Registers.A == 0xFFEE);
             Assert.IsTrue(_cpu.Registers.B == 0xAABB);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0);
 
             _cpu.Step();
             _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue - 2);
-            Assert.IsTrue(_memory[ushort.MaxValue] == 0xFFEE);
-            Assert.IsTrue(_memory[ushort.MaxValue - 1] == 0xAABB);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack - 2);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack] == 0xFFEE);
+            Assert.IsTrue(_memory.Stack[_cpu.Registers.TopOfStack - 1] == 0xAABB);
 
             _cpu.Step();
             _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.SP == ushort.MaxValue);
+            Assert.IsTrue(_cpu.Registers.SP == _cpu.Registers.TopOfStack);
             Assert.IsTrue(_cpu.Registers.A == 0xAABB);
             Assert.IsTrue(_cpu.Registers.B == 0xFFEE);
         }
