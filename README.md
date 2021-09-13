@@ -80,14 +80,19 @@ $ represents register.
 	- 0x0700 - 1 byte - RET
 #### Move
 	- 0x10NN - 1 byte - MOV $X, $Y
-	- 0x11NN - 1 byte - MOV $X, ($Y)
-	- 0x12N0 - 2 byte - MOV $X, (i16)
-	- 0x13NN - 1 byte - MOV ($X), $Y
-	- 0x14N0 - 2 byte - MOV (i16), $X
-	- 0x15NN - 3 byte - MOV $X, (i16 + $Y)
-	- 0x16NN - 3 byte - MOV (i16 + X), Y
-	- 0x17N0 - 2 byte - MOV i16, $X
-	- 0x1800 - 3 byte - MOV i16, (i16)
+	- 0x11N0 - 2 byte - MOV i16, $Y
+	- 0x12NN - 1 byte - MOV ($X), $Y
+	- 0x13N0 - 2 byte - MOV (i16), $Y
+	- 0x14NN - 1 byte - MOV $X, ($Y)
+	- 0x15N0 - 2 byte - MOV i16, ($Y)
+	- 0x16NN - 2 byte - MOV $X, (i16)
+	- 0x1700 - 3 byte - MOV i16, (i16)
+	- 0x18NN - 1 byte - MOV ($X), ($Y)
+	- 0x19N0 - 2 byte - MOV ($X), (i16)
+	- 0x1AN0 - 2 byte - MOV (i16), ($X)
+	- 0x1BN0 - 2 byte - MOV (i16), (i16)
+	- 0x1CNN - 3 byte - MOV $X, (i16 + $Y)
+	- 0x1DNN - 3 byte - MOV (i16 + $X), $Y
 	
 #### General Arithmetic
 	- 0x20NN - 1 byte - ADD $X, $Y
