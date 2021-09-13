@@ -48,7 +48,7 @@ namespace IkarosPC.Tests
             _memory.SetInitialMemory(new ushort[]
             {
                 // Store 0x1234 in Register A
-                0x1300, 0x1234,
+                0x1100, 0x1234,
                 // Push value onto stack.
                 0x0200,
                 // Push literal onto stack (Should ignore last two values)
@@ -221,7 +221,7 @@ namespace IkarosPC.Tests
             _memory.SetInitialMemory(new ushort[]
             {
                 // Store initial value in A.
-                0x1300, 0x1234,
+                0x1100, 0x1234,
                 // Halt execution.
                 0x0100,
                 // Try replace value of A (shouldn't run)
