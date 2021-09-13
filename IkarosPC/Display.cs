@@ -25,8 +25,7 @@ namespace IkarosPC
             // Dispatch all events
             window.DispatchEvents();
 
-            // If you see blue on screen, somethings gone wrong.
-            window.Clear(Color.Blue);
+            window.Clear(Color.Black);
 
             _image = new Image((uint)_vram.ScreenX, (uint)_vram.ScreenY, ConvertScreenToSFML());
 
