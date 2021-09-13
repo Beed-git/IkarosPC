@@ -148,9 +148,19 @@ namespace IkarosPC
                     }
                     break;
                 // Store literal value in memory specified by literal.
-                // 2 bytes.
+                // 3 bytes.
                 // e.g. MOV 0x1234, (0xFFFF)
+                case 0x15:
+                    {
+                        var literal = _memory.Ram[_registers.PC];
+                        _registers.PC++;
 
+                        var address = _memory.Ram[_registers.PC];
+                        _registers.PC++;
+
+                        _memory[address] = literal;
+                    }
+                    break;
                 // Adds the values of the first and second register and puts the result in the accumulator.
                 // ZCN: Z C 0
                 // 1 byte.

@@ -30,7 +30,7 @@ namespace IkarosPC
 
             for (int i = 0; i < _screenX * _screenY; i++)
             {
-                _vram[i] = (ushort)i;
+                _vram[i] = (ushort)((i * ushort.MaxValue / _screenX * _screenY) << 2);
             }
         }
 

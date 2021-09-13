@@ -109,6 +109,47 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_memory[0x1234] == 0x1515);
         }
 
+        [Test]
+        public void MoveLiteralToLiteral()
+        {
+            _memory.SetInitialMemory(new ushort[] {
+                // Store 0x1234 at address 0x2000.
+                0x1500, 0x1234, 0x2000,
+                // Switch to vram
+                0x1500, 0x0002, 0xFFFF,
+                // Store in vram
+                0x1500, 0x4321, 0x1000,
+            });
+
+            // Manually set vram at 0x1000 to zero, since it could aready contain a value. 
+            _memory.Vram[0x1000] = 0;
+
+            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.Vram[0x1000] == 0);
+            Assert.IsTrue(_memory[0xFFFF] == 0);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.Vram[0x1000] == 0);
+            Assert.IsTrue(_memory[0xFFFF] == 0);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.Vram[0x1000] == 0);
+            Assert.IsTrue(_memory[0xFFFF] == 0x0002);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 9);
+            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.Vram[0x1000] == 0x4321);
+            Assert.IsTrue(_memory[0xFFFF] == 0x0002);
+        }
+
         // 0x10
         [Test]
         public void MoveFromRegisterToRegister()
