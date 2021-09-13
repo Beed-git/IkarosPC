@@ -9,7 +9,7 @@ Any trailing zeros in instructions such as STOP can be assumed to be ignored.
 
 Any numbers in an instruction (e.g. in MOV X, 0x1234) refers to a literal 16-bit value.
 
-### Instructions
+### Old Instructions
 #### Control
 - 0x0000: NOP
 - 0x0100: STOP
@@ -65,3 +65,81 @@ S is any number between 0 & 7 inclusive.
 - 0x5B00: JNC 0x1234
 - 0x5CN0: JNS X
 - 0x5D00: JNS 0x1234
+
+### New Instructions
+insn, source, destination
+$ represents register.
+#### Control
+	- 0x0000 - 1 byte - NOP
+	- 0x0100 - 1 byte - STOP
+	- 0x02N0 - 1 byte - PUSH $X
+	- 0x0300 - 2 byte - PUSH i16
+	- 0x04N0 - 1 byte - POP $X
+	- 0x05N0 - 1 byte - CALL $X
+	- 0x0600 - 2 byte - CALL i16
+	- 0x0700 - 1 byte - RET
+#### Move
+	- 0x10NN - 1 byte - MOV $X, $Y
+	- 0x11NN - 1 byte - MOV $X, ($Y)
+	- 0x12N0 - 2 byte - MOV $X, (i16)
+	- 0x13NN - 1 byte - MOV ($X), $Y
+	- 0x14N0 - 2 byte - MOV (i16), $X
+	- 0x15NN - 3 byte - MOV $X, (i16 + $Y)
+	- 0x16NN - 3 byte - MOV (i16 + X), Y
+	- 0x17N0 - 2 byte - MOV i16, $X
+	- 0x1800 - 3 byte - MOV i16, (i16)
+	
+#### General Arithmetic
+	- 0x20NN - 1 byte - ADD $X, $Y
+	- 0x21N0 - 2 byte - ADD $X, i16
+	- 0x22NN - 1 byte - SUB $X, $Y
+	- 0x23N0 - 2 byte - SUB $X, i16
+	- 0x34N0 - 2 byte - SUB i16, $X
+	- 0x35N0 - 1 byte - INC $X
+	- 0x36N0 - 1 byte - DEC $X
+#### Unsigned Arithmetic
+	- 0x40NN - 1 byte - MUL $X, $Y
+	- 0x41N0 - 2 byte - MUL $X, i16
+	- 0x42NN - 1 byte - DIV $X, $Y
+	- 0x43N0 - 2 byte - DIV $X, i16
+	- 0x44N0 - 2 byte - DIV i16, $X
+	- 0x45NN - 1 byte - MOD $X, $Y
+	- 0x46N0 - 2 byte - MOD $X, i16
+	- 0x47N0 - 2 byte - MOD i16, $X
+#### Signed Arithmetic
+	- 0x50NN - 1 byte - MUL $X, $Y
+	- 0x51N0 - 2 byte - MUL $X, i16
+	- 0x52NN - 1 byte - DIV $X, $Y
+	- 0x53N0 - 2 byte - DIV $X, i16
+	- 0x54N0 - 2 byte - DIV i16, $X
+	- 0x55NN - 1 byte - MOD $X, $Y
+	- 0x56N0 - 2 byte - MOD $X, i16
+	- 0x50N0 - 2 byte - MOD i16, $X
+#### Bit Arithemtic
+	- 0x60NN - 1 byte - AND $X, $Y
+	- 0x61NN - 2 byte - AND $X, i16
+	- 0x62NN - 1 byte - OR $X, $Y
+	- 0x63NN - 2 byte - OR $X, i16
+	- 0x64NN - 1 byte - XOR $X, $Y
+	- 0x65NN - 2 byte - XOR $X, i16
+	- 0x66NN - 1 byte - LLS $X, $Y
+	- 0x67NN - 2 byte - LLS $X, i16
+	- 0x68NN - 1 byte - RLS $X, $Y
+	- 0x69NN - 2 byte - RLS $X, i16
+	- 0x6ANN - 1 byte - LLSC $X, $Y
+	- 0x6BNN - 2 byte - LLSC $X, i16
+	- 0x6CNN - 1 byte - RLSC $X, $Y
+	- 0x6DNN - 2 byte - RLSC $X, i16
+#### Jump
+	- 0x8010 - 2 byte - JMP ($X)
+	- 0x8100 - 2 byte - JMP (i16)
+	- 0x82NN 0xN000 - 2 byte -  JEQ $X, $Y, ($X)
+	- 0x82NN 0xN000 - 2 byte - JEQ $X, $Y, (i16)
+	- 0x83NN 0xN000 - 2 byte - JNEQ $X, $Y, ($X)
+	- 0x84NN - 2 byte - JNEQ $X, $Y, (i16)
+	- 0x85N0 - 1 byte - JEZ $X
+	- 0x8600 - 2 byte - JEZ (i16)
+	- 0x87NF - 1 byte - JF ($X)
+	- 0x88NF - 1 byte - JF (i16)
+	- 0x89NF - 1 byte - JNF ($X)
+	- 0x8ANF - 2 byte - JNF (i16)
