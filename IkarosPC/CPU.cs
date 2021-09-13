@@ -46,6 +46,14 @@ namespace IkarosPC
         }
 
         // Instruction helpers
+        public ushort GetImmediate16()
+        {
+            var immediate = _memory.Ram[_registers.PC];
+            _registers.PC++;
+
+            return immediate;
+        }
+
         public void Push(ushort value)
         {
             _memory.Stack[_registers.SP] = value;

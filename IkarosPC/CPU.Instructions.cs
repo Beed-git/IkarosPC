@@ -17,7 +17,8 @@ namespace IkarosPC
                 // No operation occurs.
                 // 1 byte.
                 // e.g. NOP
-                case 0x00: break;
+                case 0x00:
+                    break;
                 // Stop execution from occuring.
                 // 1 byte
                 // e.g. STOP
@@ -28,7 +29,7 @@ namespace IkarosPC
                     break;
                 // Pushs the value of a register on the stack.
                 // 1 byte.
-                // e.g. PUSH X
+                // e.g. PUSH $X
                 case 0x02:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -36,19 +37,19 @@ namespace IkarosPC
                         Push(_registers[rX]);
                     }
                     break;
-                // Pushs a literal value on the stack.
+                // Pushs an immediate value on the stack.
                 // 2 bytes.
-                // e.g. PUSH 0x1234
+                // e.g. PUSH i16
                 case 0x03:
                     {
-                        Push(_memory.Ram[_registers.PC]);
+                        var immediate = GetImmediate16();
 
-                        _registers.PC++;
+                        Push(immediate);
                     }
                     break;
                 // Pops the value of a register off the stack.
                 // 1 byte.
-                // e.g. POP X
+                // e.g. POP $X
                 case 0x04:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -56,23 +57,22 @@ namespace IkarosPC
                         _registers[rX] = Pop();
                     }
                     break;
-                // Calls a subroutine from a literal value. 
+                // Calls a subroutine from an immediate value. 
                 // 2 bytes.
-                // e.g. CALL func_name:
+                // e.g. CALL i16:
                 case 0x05:
                     {
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        var immediate = GetImmediate16();
 
                         // Save state to stack
                         SaveStackState();
 
-                        _registers.PC = literal;
+                        _registers.PC = immediate;
                     }
                     break;
                 // Calls a subroutine from a register
                 // 2 bytes.
-                // e.g. CALL X:
+                // e.g. CALL $X:
                 case 0x06:
                     {
                         SaveStackState();
@@ -92,7 +92,7 @@ namespace IkarosPC
 
                 // Moves value from first register to second register.
                 // 1 byte.
-                // e.g. MOV X Y
+                // e.g. MOV $X, $Y
                 case 0x10:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -101,10 +101,21 @@ namespace IkarosPC
                         _registers[rY] = _registers[rX];
                     }
                     break;
-                // Move value from memory specified by first register to second register.
-                // 1 byte.
-                // e.g. MOV (X) Y
+                // Moves an immediate value into a specified register.
+                // 2 bytes.
+                // e.g. MOV i16, $X
                 case 0x11:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+                        _registers[rX] = immediate;
+                    }
+                    break;
+                // Moves a value in memory specified by a register into another register.
+                // 1 byte.
+                // e.g. MOV ($X), $Y
+                case 0x12:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
@@ -112,10 +123,21 @@ namespace IkarosPC
                         _registers[rY] = _memory[_registers[rX]];
                     }
                     break;
-                // Move value from first register to memory specified by second register.
+                // Moves a value in memory specified by an immediate value into a register.
+                // 2 bytes.
+                // e.g. MOV (i16), $X
+                case 0x13:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+                        _registers[rX] = _memory[immediate];
+                    }
+                    break;
+                // Moves a value from a register into memory specified by another register.
                 // 1 byte.
-                // e.g. MOV X (Y)
-                case 0x12:
+                // e.g. MOV $X, ($Y)
+                case 0x14:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
@@ -123,70 +145,107 @@ namespace IkarosPC
                         _memory[_registers[rY]] = _registers[rX];
                     }
                     break;
-                // Store literal value into register.
-                // 2 bytes
-                // e.g. MOV 0x1234 X
-                case 0x13:
-                    {
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-                        // Ignore value at 0x000F
-
-                        _registers[rX] = _memory[_registers.PC];
-                        _registers.PC++;
-                    }
-                    break;
-                // Store literal value into memory specified by register.
-                // 2 bytes
-                // e.g. MOV 0x1234 (X)
-                case 0x14:
-                    {
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-                        // Ignore value at 0x000F
-
-                        _memory[_registers[rX]] = _memory.Ram[_registers.PC];
-                        _registers.PC++;
-                    }
-                    break;
-                // Store literal value in memory specified by literal.
-                // 3 bytes.
-                // e.g. MOV 0x1234, (0xFFFF)
+                // Stores an immediate value in memory specified by a register.
+                // 2 bytes.
+                // e.g. MOV i16, ($X)
                 case 0x15:
                     {
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var address = _memory.Ram[_registers.PC];
-                        _registers.PC++;
-
-                        _memory[address] = literal;
+                        var immediate = GetImmediate16();
+                        _memory[_registers[rX]] = immediate;
                     }
                     break;
-                // Store a value in memory + an offset.
+                // Moves a value from a register into memory specified by an immediate.
                 // 2 bytes.
-                // e.g. MOV X, (0x1234 + Y)
+                // e.g. MOV $X, (i16)
                 case 0x16:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+                        _memory[immediate] = _registers[rX];
+                    }
+                    break;
+                // Moves an immediate value into memory specified by an immediate value.
+                // 3 bytes.
+                // e.g. MOV i16, (i16)
+                case 0x17:
+                    {
+                        var immediate = GetImmediate16();
+                        var address = GetImmediate16();
+
+                        _memory[address] = immediate;
+                    }
+                    break;
+                // Moves a value from memory specified by a register into another memory location specified by another register.
+                // 1 byte.
+                // e.g. MOV ($X), ($Y)
+                case 0x18:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var offset = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        _memory[_registers[rY]] = _memory[_registers[rX]];
+                    }
+                    break;
+                // Moves a value in memory specified by a register into a memory location specified by an immediate value.
+                // 2 bytes.
+                // e.g. MOV ($X), (i16)
+                case 0x19:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+                        _memory[immediate] = _memory[_registers[rX]];
+                    }
+                    break;
+                // Moves a value in memory specified by an immediate value into a memory location specified by a register.
+                // 2 bytes.
+                // e.g. MOV (i16), ($X)
+                case 0x1A:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+                        _memory[_registers[rX]] = _memory[immediate];
+                    }
+                    break;
+                // Moves a value in memory specified by an immediate value into a memory location specified by another immediate value.
+                // 3 bytes.
+                // e.g. MOV (i16), (i16)
+                case 0x1B:
+                    {
+                        var immediate = GetImmediate16();
+                        var address = GetImmediate16();
+
+                        _memory[address] = _memory[immediate];
+                    }
+                    break;
+                // Store a value in memory at an immediate value + an offset.
+                // 2 bytes.
+                // e.g. MOV X, (0x1234 + Y)
+                case 0x1C:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var offset = GetImmediate16();
 
                         var address = (ushort)(offset + _registers[rY]);
 
                         _memory[address] = _registers[rX];
                     }
                     break;
-                // Stores a value in a register at a literal value + an offset.
+                // Stores a value in a register at an immediate value + an offset.
                 // 2 bytes.
-                // e.g. MOV (0x1234 + X), Y
-                case 0x17:
+                // e.g. MOV (0x1234 + $X), $Y
+                case 0x1D:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var offset = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        var offset = GetImmediate16();
 
                         var address = (ushort)(offset + _registers[rX]);
 
@@ -342,6 +401,16 @@ namespace IkarosPC
                 // ZCN: Z C 1
                 // 2 bytes.
                 // e.g. MOD 0x1234 X
+
+                // Increment register. Value gets stored in the same register which was incremented.
+                // ZCN: Z C 1
+                // 1 byte.
+                // e.g. INC X
+
+                // Decrement register. Value gets stored in the same register which as decremented.
+                // ZCN: Z C 0
+                // 1 byte.
+                // e.g. DEC X
 
                 // start from 0x30
 
