@@ -90,10 +90,9 @@ $ represents register.
 	- 0x18NN - 1 byte - MOV ($X), ($Y)
 	- 0x19N0 - 2 byte - MOV ($X), (i16)
 	- 0x1AN0 - 2 byte - MOV (i16), ($X)
-	- 0x1BN0 - 2 byte - MOV (i16), (i16)
+	- 0x1B00 - 3 byte - MOV (i16), (i16)
 	- 0x1CNN - 2 byte - MOV $X, (i16 + $Y)
 	- 0x1DNN - 2 byte - MOV (i16 + $X), $Y
-	
 #### General Arithmetic
 	- 0x20NN - 1 byte - ADD $X, $Y
 	- 0x21N0 - 2 byte - ADD $X, i16
