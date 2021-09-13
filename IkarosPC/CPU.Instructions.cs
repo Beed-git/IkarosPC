@@ -161,6 +161,39 @@ namespace IkarosPC
                         _memory[address] = literal;
                     }
                     break;
+                // Store a value in memory + an offset.
+                // 2 bytes.
+                // e.g. MOV X, (0x1234 + Y)
+                case 0x16:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var offset = _memory.Ram[_registers.PC];
+                        _registers.PC++;
+
+                        var address = (ushort)(offset + _registers[rY]);
+
+                        _memory[address] = _registers[rX];
+                    }
+                    break;
+                // Stores a value in a register at a literal value + an offset.
+                // 2 bytes.
+                // e.g. MOV (0x1234 + X), Y
+                case 0x17:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var offset = _memory.Ram[_registers.PC];
+                        _registers.PC++;
+
+                        var address = (ushort)(offset + _registers[rX]);
+
+                        _registers[rY] = _memory[address];
+                    }
+                    break;
+
                 // Adds the values of the first and second register and puts the result in the accumulator.
                 // ZCN: Z C 0
                 // 1 byte.
