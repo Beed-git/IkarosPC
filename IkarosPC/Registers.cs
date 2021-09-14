@@ -108,7 +108,7 @@ namespace IkarosPC
 
         /// <summary>
         /// Flags register.
-        /// 0000 0ZCN
+        /// 0000 SZCN
         /// </summary>
         public ushort Flags
         {

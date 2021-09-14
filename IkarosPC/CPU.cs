@@ -27,7 +27,6 @@ namespace IkarosPC
             _stopped = false;
         }
 
-
         public void Reset()
         {
             _registers.Reset();

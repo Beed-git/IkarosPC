@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IkarosPC.Tests.InstructionTests
 {
-    class MoveInstructionsTests
+    class Move
     {
         Memory _memory;
         CPU _cpu;
