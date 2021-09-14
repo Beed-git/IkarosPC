@@ -582,7 +582,7 @@ namespace IkarosPC
                     break;
                 // Logical left shift a register by an immediate and stores the result in $ACC.
                 // SZCN: 0 Z C 0
-                // 1 byte.
+                // 2 bytes.
                 // e.g. LLS $X, i16
                 case 0x58:
                     {
@@ -620,7 +620,7 @@ namespace IkarosPC
                     break;
                 // Logical right shift a register by an immediate and stores the result in $ACC.
                 // SZCN: 0 Z 0 0
-                // 1 byte.
+                // 2 bytes.
                 // e.g. RLS $X, i16
                 case 0x5A:
                     {
@@ -633,6 +633,37 @@ namespace IkarosPC
                         Registers.Carry = false;
                         Registers.Negative = false;
                         Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register left by another register and store the result in $ACC.
+                // Flags are not touched.
+                // 1 byte.
+                // e.g. ROL $X, $Y
+                case 0x5B:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var amount = (_registers[rY] % 0xF);
+
+                        var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register left by an immediate value and store the result in $ACC.
+                // Flags are not touched.
+                // 2 bytes.
+                // e.g. ROL $X, i16
+                case 0x5C:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var amount = (GetImmediate16() % 0xF);
+
+                        var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
 
                         _registers.Accumulator = (ushort)result;
                     }
