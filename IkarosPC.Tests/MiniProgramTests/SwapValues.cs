@@ -29,8 +29,8 @@ namespace IkarosPC.Tests.MiniProgramTests
             _memory.SetInitialMemory(new ushort[]
             {
                 // Load values into register.
-                0x1300, 0xFFEE,
-                0x1310, 0xAABB,
+                0x1100, 0xFFEE,
+                0x1110, 0xAABB,
                 // Push both values to stack.
                 0x0200, 
                 0x0210,
