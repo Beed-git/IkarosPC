@@ -742,7 +742,59 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
+                // Rotate a register right through carry by another register and store the result in $ACC.
+                // SZCN: 0 Z C 0.
+                // 1 byte.
+                // e.g. RRC $X, $Y
+                case 0x61:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
 
+                        var amount = _registers[rY] % 0x11;
+                        var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+
+                        var result = (number >> amount) | (number << (0x11 - amount));
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        // Convaluted way of setting carry bit. Refactor this in the future.
+                        if (amount != 0)
+                        {
+                            Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                        }
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register right through carry by an immediate value and store the result in $ACC.
+                // SZCN: 0 Z C 0
+                // 2 bytes.
+                // e.g. RRC $X, i16
+                case 0x62:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var amount = GetImmediate16() % 0x11;
+                        var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+
+                        var result = (number >> amount) | (number << (0x11 - amount));
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        // Convaluted way of setting carry bit. Refactor this in the future.
+                        if (amount != 0)
+                        {
+                            Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                        }
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
                 // Jump if the two registers are equal.
                 // 1 byte.
                 // e.g. JEQ X, Y
