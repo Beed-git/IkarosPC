@@ -66,9 +66,21 @@ S is any number between 0 & 7 inclusive.
 - 0x5CN0: JNS X
 - 0x5D00: JNS 0x1234
 
+### Registers
+- $PC = Program counter.
+- $SP = Stack pointer.
+- $FP = Frame pointer. (stack)
+- $ACC = Accumulator.
+- $FLAG = Flags.
+- $A, $B, $C, $D, $E, $X, $Y, $Z = general purpose registers.
+
 ### New Instructions
 insn, source, destination
-$ represents register.
+- $ = A register. $X and $Y below mean any general register or $ACC.
+- () = Brackets surrounding a value mean the address in memory.
+- i16 = An immediate 16-bit value.
+- N = Any general register or $ACC.
+- F = Bit corresponding to bit in $FLAG .
 #### Control
 	- 0x0000 - 1 byte - NOP
 	- 0x0100 - 1 byte - STOP
@@ -98,10 +110,19 @@ $ represents register.
 	- 0x21N0 - 2 byte - ADD $X, i16
 	- 0x22NN - 1 byte - SUB $X, $Y
 	- 0x23N0 - 2 byte - SUB $X, i16
-	- 0x34N0 - 2 byte - SUB i16, $X
-	- 0x35N0 - 1 byte - INC $X
-	- 0x36N0 - 1 byte - DEC $X
+	- 0x24N0 - 2 byte - SUB i16, $X
+	- 0x25N0 - 1 byte - INC $X
+	- 0x26N0 - 1 byte - DEC $X
 #### Unsigned Arithmetic
+	- 0x30NN - 1 byte - MUL $X, $Y
+	- 0x31N0 - 2 byte - MUL $X, i16
+	- 0x32NN - 1 byte - DIV $X, $Y
+	- 0x33N0 - 2 byte - DIV $X, i16
+	- 0x34N0 - 2 byte - DIV i16, $X
+	- 0x35NN - 1 byte - MOD $X, $Y
+	- 0x36N0 - 2 byte - MOD $X, i16
+	- 0x37N0 - 2 byte - MOD i16, $X
+#### Signed Arithmetic
 	- 0x40NN - 1 byte - MUL $X, $Y
 	- 0x41N0 - 2 byte - MUL $X, i16
 	- 0x42NN - 1 byte - DIV $X, $Y
@@ -109,41 +130,32 @@ $ represents register.
 	- 0x44N0 - 2 byte - DIV i16, $X
 	- 0x45NN - 1 byte - MOD $X, $Y
 	- 0x46N0 - 2 byte - MOD $X, i16
-	- 0x47N0 - 2 byte - MOD i16, $X
-#### Signed Arithmetic
-	- 0x50NN - 1 byte - MUL $X, $Y
-	- 0x51N0 - 2 byte - MUL $X, i16
-	- 0x52NN - 1 byte - DIV $X, $Y
-	- 0x53N0 - 2 byte - DIV $X, i16
-	- 0x54N0 - 2 byte - DIV i16, $X
-	- 0x55NN - 1 byte - MOD $X, $Y
-	- 0x56N0 - 2 byte - MOD $X, i16
-	- 0x50N0 - 2 byte - MOD i16, $X
-#### Bit Arithemtic
-	- 0x60NN - 1 byte - AND $X, $Y
-	- 0x61NN - 2 byte - AND $X, i16
-	- 0x62NN - 1 byte - OR $X, $Y
-	- 0x63NN - 2 byte - OR $X, i16
-	- 0x64NN - 1 byte - XOR $X, $Y
-	- 0x65NN - 2 byte - XOR $X, i16
-	- 0x66NN - 1 byte - LLS $X, $Y
-	- 0x67NN - 2 byte - LLS $X, i16
-	- 0x68NN - 1 byte - RLS $X, $Y
-	- 0x69NN - 2 byte - RLS $X, i16
-	- 0x6ANN - 1 byte - LLSC $X, $Y
-	- 0x6BNN - 2 byte - LLSC $X, i16
-	- 0x6CNN - 1 byte - RLSC $X, $Y
-	- 0x6DNN - 2 byte - RLSC $X, i16
+	- 0x40N0 - 2 byte - MOD i16, $X
+#### Bit Arithmetic
+	- 0x50NN - 1 byte - AND $X, $Y
+	- 0x51NN - 2 byte - AND $X, i16
+	- 0x52NN - 1 byte - OR $X, $Y
+	- 0x53NN - 2 byte - OR $X, i16
+	- 0x54NN - 1 byte - XOR $X, $Y
+	- 0x55NN - 2 byte - XOR $X, i16
+	- 0x56NN - 1 byte - LLS $X, $Y
+	- 0x57NN - 2 byte - LLS $X, i16
+	- 0x58NN - 1 byte - RLS $X, $Y
+	- 0x59NN - 2 byte - RLS $X, i16
+	- 0x5ANN - 1 byte - LLSC $X, $Y
+	- 0x5BNN - 2 byte - LLSC $X, i16
+	- 0x5CNN - 1 byte - RLSC $X, $Y
+	- 0x5DNN - 2 byte - RLSC $X, i16
 #### Jump
-	- 0x8010 - 2 byte - JMP ($X)
-	- 0x8100 - 2 byte - JMP (i16)
-	- 0x82NN 0xN000 - 2 byte -  JEQ $X, $Y, ($X)
-	- 0x82NN 0xN000 - 2 byte - JEQ $X, $Y, (i16)
-	- 0x83NN 0xN000 - 2 byte - JNEQ $X, $Y, ($X)
-	- 0x84NN - 2 byte - JNEQ $X, $Y, (i16)
-	- 0x85N0 - 1 byte - JEZ $X
-	- 0x8600 - 2 byte - JEZ (i16)
-	- 0x87NF - 1 byte - JF ($X)
-	- 0x88NF - 1 byte - JF (i16)
-	- 0x89NF - 1 byte - JNF ($X)
-	- 0x8ANF - 2 byte - JNF (i16)
+	- 0x7010 - 2 byte - JMP ($X)
+	- 0x7100 - 2 byte - JMP (i16)
+	- 0x72NN 0xN000 - 2 byte -  JEQ $X, $Y, ($X)
+	- 0x72NN 0xN000 - 2 byte - JEQ $X, $Y, (i16)
+	- 0x73NN 0xN000 - 2 byte - JNEQ $X, $Y, ($X)
+	- 0x74NN - 2 byte - JNEQ $X, $Y, (i16)
+	- 0x75N0 - 1 byte - JEZ $X
+	- 0x7600 - 2 byte - JEZ (i16)
+	- 0x77NF - 1 byte - JF ($X)
+	- 0x78NF - 1 byte - JF (i16)
+	- 0x79NF - 1 byte - JNF ($X)
+	- 0x7ANF - 2 byte - JNF (i16)
