@@ -133,19 +133,19 @@ insn, source, destination
 	- 0x40N0 - 2 byte - MOD i16, $X
 #### Bit Arithmetic
 	- 0x50NN - 1 byte - AND $X, $Y
-	- 0x51NN - 2 byte - AND $X, i16
+	- 0x51N0 - 2 byte - AND $X, i16
 	- 0x52NN - 1 byte - OR $X, $Y
-	- 0x53NN - 2 byte - OR $X, i16
+	- 0x53N0 - 2 byte - OR $X, i16
 	- 0x54NN - 1 byte - XOR $X, $Y
-	- 0x55NN - 2 byte - XOR $X, i16
+	- 0x55N0 - 2 byte - XOR $X, i16
 	- 0x56NN - 1 byte - LLS $X, $Y
-	- 0x57NN - 2 byte - LLS $X, i16
+	- 0x57N0 - 2 byte - LLS $X, i16
 	- 0x58NN - 1 byte - RLS $X, $Y
-	- 0x59NN - 2 byte - RLS $X, i16
+	- 0x59N0 - 2 byte - RLS $X, i16
 	- 0x5ANN - 1 byte - LLSC $X, $Y
-	- 0x5BNN - 2 byte - LLSC $X, i16
+	- 0x5BN0 - 2 byte - LLSC $X, i16
 	- 0x5CNN - 1 byte - RLSC $X, $Y
-	- 0x5DNN - 2 byte - RLSC $X, i16
+	- 0x5DN0 - 2 byte - RLSC $X, i16
 #### Jump
 	- 0x70N0 - 1 byte - JMP ($X)
 	- 0x7100 - 2 byte - JMP (i16)
