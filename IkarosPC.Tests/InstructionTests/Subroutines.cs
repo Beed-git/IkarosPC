@@ -28,14 +28,14 @@ namespace IkarosPC.Tests.InstructionTests
         {
             _memory.SetInitialMemory(new ushort[] {
                 // Set values for general registers.
-                0x1300, 0x0001,
-                0x1310, 0x0002,
-                0x1320, 0x0003,
-                0x1330, 0x0004,
-                0x1340, 0x0005,
-                0x1350, 0x0006,
-                0x1360, 0x0007,
-                0x1370, 0x0008,
+                0x1100, 0x0001,
+                0x1110, 0x0002,
+                0x1120, 0x0003,
+                0x1130, 0x0004,
+                0x1140, 0x0005,
+                0x1150, 0x0006,
+                0x1160, 0x0007,
+                0x1170, 0x0008,
                 // Push random values to move stack
                 0x0300, 0xFFFF,
                 0x0300, 0x1234,
@@ -44,7 +44,7 @@ namespace IkarosPC.Tests.InstructionTests
                 // Subtract register A from itself to set flags register
                 0x2200,
                 // Store random value into accumulator (Shouldn't be saved)
-                0x1380, 0xF123,
+                0x1180, 0xF123,
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Call subroutine
@@ -58,11 +58,11 @@ namespace IkarosPC.Tests.InstructionTests
                 0x0300, 0x9191,
                 0x0300, 0xF4F4,
                 // Store random values in registers (including accumulator)
-                0x1300, 0x11FF,
-                0x1310, 0x22FF,
-                0x1320, 0x33FF,
-                0x1330, 0x44FF,
-                0x1380, 0xFFFF,
+                0x1100, 0x11FF,
+                0x1110, 0x22FF,
+                0x1120, 0x33FF,
+                0x1130, 0x44FF,
+                0x1180, 0xFFFF,
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Nested subroutine call. (Gets the value 5)
@@ -81,8 +81,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x0300, 0x5468,
                 0x0300, 0x898A,
                 // Store numbers in register A and B.
-                0x1300, 0x0003,
-                0x1310, 0x0002,
+                0x1100, 0x0003,
+                0x1110, 0x0002,
                 // Add the two numbers together (storing the value in the accumulator)
                 0x2010,
                 // Return
@@ -214,14 +214,14 @@ namespace IkarosPC.Tests.InstructionTests
             _memory.SetInitialMemory(new ushort[]
             {
                 // Set values for general registers.
-                0x1300, 0x0001,
-                0x1310, 0x0002,
-                0x1320, 0x0003,
-                0x1330, 0x4000,
-                0x1340, 0x0005,
-                0x1350, 0x0006,
-                0x1360, 0x0007,
-                0x1370, 0x0008,
+                0x1100, 0x0001,
+                0x1110, 0x0002,
+                0x1120, 0x0003,
+                0x1130, 0x4000,
+                0x1140, 0x0005,
+                0x1150, 0x0006,
+                0x1160, 0x0007,
+                0x1170, 0x0008,
                 // Push random values to move stack
                 0x0300, 0xFFFF,
                 0x0300, 0x1234,
@@ -230,12 +230,12 @@ namespace IkarosPC.Tests.InstructionTests
                 // Subtract register A from itself to set flags register
                 0x2200,
                 // Store random value into accumulator (Shouldn't be saved)
-                0x1380, 0xF123,
+                0x1180, 0xF123,
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Call subroutine
                 0x0630,
-                // Psuh random value to stack
+                // Push random value to stack
                 0x0300, 0x1F1F,
             });
 
@@ -245,13 +245,13 @@ namespace IkarosPC.Tests.InstructionTests
                 0x0300, 0x9191,
                 0x0300, 0xF4F4,
                 // Store random values in registers (including accumulator)
-                0x1300, 0x11FF,
-                0x1310, 0x22FF,
-                0x1320, 0x33FF,
-                0x1330, 0x44FF,
-                0x1380, 0xFFFF,
+                0x1100, 0x11FF,
+                0x1110, 0x22FF,
+                0x1120, 0x33FF,
+                0x1130, 0x44FF,
+                0x1180, 0xFFFF,
                 // Store address of next subroutine
-                0x1340, 0x2000,
+                0x1140, 0x2000,
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Nested subroutine call. (Gets the value 5)
@@ -271,8 +271,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x0300, 0x5468,
                 0x0300, 0x898A,
                 // Store numbers in register A and B.
-                0x1300, 0x0003,
-                0x1310, 0x0002,
+                0x1100, 0x0003,
+                0x1110, 0x0002,
                 // Add the two numbers together (storing the value in the accumulator)
                 0x2010,
                 // Return
