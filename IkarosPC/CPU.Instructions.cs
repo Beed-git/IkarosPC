@@ -265,7 +265,7 @@ namespace IkarosPC
                 // General Arithmetic
                 //
 
-                // Adds the values of the first and second register and puts the result in the accumulator.
+                // Adds the values of the first and second register and puts the result in $ACC.
                 // SZCN: 0 Z C 0
                 // 1 byte.
                 // e.g. ADD $X, $Y
@@ -284,7 +284,7 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Adds the value of the first register and an immediate value and stores the result in the accumulator.
+                // Adds the value of the first register and an immediate value and stores the result in $ACC.
                 // SZCN: 0 Z C 0
                 // 2 bytes.
                 // e.g. ADD i16, $X
@@ -304,7 +304,7 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)(_registers[rX] + immediate);
                     }
                     break;
-                // Subtracts the value of the first register from the second and stores the result in the accumulator.
+                // Subtracts the value of the first register from the second and stores the result in $ACC.
                 // SZCN: 0 Z C 1
                 // 1 byte.
                 // e.g. SUB $X, $Y
@@ -323,7 +323,7 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Subtracts the value of the register from the immediate value and stores the result in the accumulator.
+                // Subtracts the value of the register from the immediate value and stores the result in $ACC.
                 // ZCN: 0 Z C 1
                 // 2 bytes.
                 // e.g. SUB $X, i16
@@ -343,7 +343,7 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Subtracts the immediate value from the value of the register and stores the result in the accumulator.
+                // Subtracts the immediate value from the value of the register and stores the result in $ACC.
                 // SZCN: 0 Z C 1
                 // 2 bytes.
                 // e.g. SUB i16, $X
@@ -404,10 +404,10 @@ namespace IkarosPC
                 // Unsigned Arithmetic.
                 //
 
-                // Multiplies the values of the two registers and stores the result in the accumulator.
-                // ZCN: Z C 0
+                // Multiplies the values of the two registers and stores the result in $ACC.
+                // SZCN: 0 Z C 0
                 // 1 byte.
-                // e.g. MUL X Y
+                // e.g. MUL $X, $Y
                 case 0x30:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -423,105 +423,144 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Multiplies the value of a register and a literal and stores the result in the accumulator.
-                // ZCN: Z C 0
-                // 2 bytes.
-                // e.g. MUL X 0x1234
 
-                // Divides the value of the first register by the value of the second and stores the result in the accumulator.
-                // ZCN: Z C 1
+                //
+                // Signed Arithmetic
+                //
+
+                //
+                // Bit Arithmetic
+                //
+
+                // Logical ands two registers and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 1 byte.
-                // e.g. DIV X Y
+                // e.g. AND $X, $Y
+                case 0x50:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
 
-                // Divides the value of the register by the literal value and stores the result in the accumulator.
-                // ZCN: Z C 1
+                        var result = _registers[rX] & _registers[rY];
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical ands a register and an immediate and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 2 bytes.
-                // e.g. DIV X 0x1234
+                // e.g. AND $X, i16
+                case 0x51:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                // Divides the literal value by the value of the register and stores the result in the accumulator.
-                // ZCN: Z C 1
+                        var result = _registers[rX] & GetImmediate16();
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical ors two registers and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
+                // 1 byte.
+                // e.g. OR $X, $Y
+                case 0x52:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var result = _registers[rX] | _registers[rY];
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical ors a register and an immediate and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 2 bytes.
-                // e.g. DIV 0x1234 X
+                // e.g. OR $X, i16
+                case 0x53:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                // Modulos the value of the first register by the second register and stores the result in the accumulator.
-                // ZCN: Z C 1
+                        var result = _registers[rX] | GetImmediate16();
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical xors two registers and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 1 byte.
-                // e.g. MOD X Y
+                // e.g. XOR $X, $Y
+                case 0x54:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
 
-                // Modulos the value of the register by the literal value and stores the result in the accumulator.
-                // ZCN: Z C 1
-                // 2 bytes
-                // e.g. MOD X 0x1234
+                        var result = _registers[rX] ^ _registers[rY];
 
-                // Modulos the literal value by the value of the register and stores the result in the accumulator.
-                // ZCN: Z C 1
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical xors a register and an immediate and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 2 bytes.
-                // e.g. MOD 0x1234 X
+                // e.g. XOR $X, i16
+                case 0x55:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                // Increment register. Value gets stored in the same register which was incremented.
-                // ZCN: Z C 1
-                // 1 byte.
-                // e.g. INC X
+                        var result = _registers[rX] ^ GetImmediate16();
 
-                // Decrement register. Value gets stored in the same register which as decremented.
-                // ZCN: Z C 0
-                // 1 byte.
-                // e.g. DEC X
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
 
-                // start from 0x30
-
-                // Ands the values of the two registers and stores the result in the accumulator.
-                // ZCN: Z 0 0
-                // 1 byte.
-                // e.g. AND X Y
-
-                // Ands the literal value with the value in the specified register and stores the result in the accumulator.
-                // ZCN: Z 0 0
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical nots a register and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
                 // 2 bytes.
-                // e.g. AND X 0x1234
+                // e.g. NOT $X
+                case 0x56:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                // Ors the values of the two registers and stores the result in the accumulator.
-                // ZCN: Z 0 0
-                // 1 byte.
-                // e.g. OR X Y
+                        var result = ~_registers[rX];
 
-                // Ors the literal value with the value in the specified register and stores the result in the accumulator.
-                // ZCN: Z 0 0
-                // 2 bytes.
-                // e.g. OR X 0x1234
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
 
-                // Xors the values of the two registers and stores the result in the accumulator.
-                // ZCN: Z 0 0
-                // 1 byte.
-                // e.g. XOR X Y
-
-                // Xors the literal value with the value in the specified register and stores the result in the accumulator.
-                // ZCN: Z 0 0
-                // 2 bytes.
-                // e.g. XOR X 0x1234
-
-                // Sets the program counter to the value stored in the register.
-                // 1 byte.
-                // e.g. J X
-
-                // Sets the program counter to the literal value.
-                // 2 bytes.
-                // e.g. JUMP 0xFF00
-                // e.g. JZ X
-                // e.g. JZ 0xFF00
-                // e.g. JC X
-                // e.g. JC 0xFF00
-
-                // e.g. JS X (maybe not this?)
-                // e.g. JS 0xFF00
-
-                // e.g. JNZ X
-                // e.g. JNZ 0xFF00
-                // e.g. JNC X
-                // e.g. JNC 0xFF00
-
-                // e.g. JNS X
-                // e.g. JNS 0xFF00
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
 
                 // Jump if the two registers are equal.
                 // 1 byte.
@@ -540,13 +579,6 @@ namespace IkarosPC
                             _registers.PC = literal;
                     }
                     break;
-                // e.g. JNEQ X, Y
-                // e.g. JNEQ X, 0x12340
-
-                // Bit shift left (through carry)
-                // Bit shift right (through carry)
-                // Rotate left (through carry)
-                // Rotate right (through carry)
 
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
