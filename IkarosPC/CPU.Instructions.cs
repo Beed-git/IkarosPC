@@ -668,6 +668,37 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
+                // Rotate a register right by another register and store the result in $ACC.
+                // Flags are not touched.
+                // 1 byte.
+                // e.g. ROR $X, $Y
+                case 0x5D:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var amount = (_registers[rY] % 0xF);
+
+                        var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register right by an immediate value and store the result in $ACC.
+                // Flags are not touched.
+                // 2 bytes.
+                // e.g. ROR $X, i16
+                case 0x5E:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var amount = (GetImmediate16() % 0xF);
+
+                        var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
 
                 // Jump if the two registers are equal.
                 // 1 byte.
