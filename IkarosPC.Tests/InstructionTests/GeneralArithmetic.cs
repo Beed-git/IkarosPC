@@ -187,7 +187,7 @@ namespace IkarosPC.Tests.InstructionTests
 
         //0x22
         [Test]
-        public void TestSubTwoRegisters()
+        public void SubTwoRegisters()
         {
             _memory.SetInitialMemory(new ushort[]
             {
@@ -216,7 +216,7 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
 
             _cpu.Step();
-            
+
             Assert.IsTrue(_cpu.Registers.PC == 5);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0FFF);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
@@ -224,7 +224,7 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
 
             _cpu.Step();
-            
+
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0x0FFE);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
@@ -232,7 +232,7 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
 
             _cpu.Step();
-            
+
             Assert.IsTrue(_cpu.Registers.PC == 7);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0xF001);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0011);
@@ -240,13 +240,292 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
 
             _cpu.Step();
-            
+
             Assert.IsTrue(_cpu.Registers.PC == 8);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
             Assert.IsTrue(_cpu.Registers.A == 0x0001);
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
 
+            // Test invalid register.
+            Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
+        }
+
+        // 0x23
+        [Test]
+        public void Subi16FromRegister()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Setup register.
+                0x1100, 0x1000,
+                // Subtract 0x0800.
+                0x2300, 0x0800,
+                // Subtract acc.
+                0x2380, 0x0200,
+                // Zero flag.
+                0x2300, 0x1000,
+                // Carry flag.
+                0x2300, 0x2000,
+                // Invalid register.
+                0x23FF, 0x1234
+            });
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0800);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0600);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0xF000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0011);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            // Test invalid register.
+            Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
+        }
+
+        // 0x24
+        [Test]
+        public void SubRegisterFromi16()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Setup register.
+                0x1100, 0x1000,
+                // Subtract.
+                0x2400, 0x1800,
+                // Subtract acc.
+                0x2480, 0x0E00,
+                // Zero flag.
+                0x2400, 0x1000,
+                // Carry flag.
+                0x2400, 0x0000,
+                // Invalid register.
+                0x24FF, 0x1234
+            });
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 2);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0800);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x0600);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0xF000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0011);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+
+            // Test invalid register.
+            Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
+        }
+
+        // 0x25
+        [Test]
+        public void Increment()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Setup registers.
+                0x1100, 0x1000,
+                0x1110, 0xFFFF,
+                // Inc register
+                0x2500,
+                // Inc acc from 0x2000
+                0x2100, 0x1000,
+                0x2580,
+                // Carry and zero
+                0x2510,
+                // Inc same register
+                0x2510,
+                // Invalid register
+                0x25FF
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFF);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1001);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFF);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x2001);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1001);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFF);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x2002);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1001);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFF);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 9);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x2002);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0110);
+            Assert.IsTrue(_cpu.Registers.A == 0x1001);
+            Assert.IsTrue(_cpu.Registers.B == 0);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x2002);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1001);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+
+            // Test invalid register.
+            Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
+        }
+
+        // 0x26
+        [Test]
+        public void Decrement()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Setup registers.
+                0x1100, 0x1000,
+                0x1110, 0x0001,
+                // Dec register
+                0x2600,
+                // Dec acc from 0x2000
+                0x2100, 0x1000,
+                0x2680,
+                // Zero
+                0x2610,
+                // Carry
+                0x2610,
+                // Dec same register
+                0x2610,
+                // Invalid register
+                0x26FF
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x1000);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1FFF);
+            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1FFE);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 9);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1FFE);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1FFE);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0011);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFF);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 11);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0x1FFE);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
+            Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
+            Assert.IsTrue(_cpu.Registers.B == 0xFFFE);
+
+            
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
         }

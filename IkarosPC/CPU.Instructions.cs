@@ -384,7 +384,7 @@ namespace IkarosPC
                 // Decrements the value of the register and stores the result back in the register.
                 // SZCN: 0 Z C 1
                 // 1 byte.
-                // e.g. INC $X
+                // e.g. DEC $X
                 case 0x26:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -396,7 +396,7 @@ namespace IkarosPC
                         Registers.Negative = true;
                         Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)result;
+                        _registers[rX] = (ushort)result;
                     }
                     break;
 
