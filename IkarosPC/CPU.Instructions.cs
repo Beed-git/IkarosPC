@@ -14,6 +14,10 @@ namespace IkarosPC
 
             switch (nibble)
             {
+                //
+                // Control
+                //
+
                 // No operation occurs.
                 // 1 byte.
                 // e.g. NOP
@@ -89,6 +93,10 @@ namespace IkarosPC
                         LoadStackState();
                     }
                     break;
+
+                //
+                // Move
+                //
 
                 // Moves value from first register to second register.
                 // 1 byte.
@@ -253,10 +261,14 @@ namespace IkarosPC
                     }
                     break;
 
+                //
+                // General Arithmetic
+                //
+
                 // Adds the values of the first and second register and puts the result in the accumulator.
-                // ZCN: Z C 0
+                // SZCN: 0 Z C 0
                 // 1 byte.
-                // e.g. ADD X Y
+                // e.g. ADD $X, $Y
                 case 0x20:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -267,34 +279,35 @@ namespace IkarosPC
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result > ushort.MaxValue;
                         Registers.Negative = false;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] + _registers[rY]);
+                        _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Adds the value of the first register and a literal value and stores the result in the accumulator.
-                // ZCN: Z C 0
+                // Adds the value of the first register and an immediate value and stores the result in the accumulator.
+                // SZCN: 0 Z C 0
                 // 2 bytes.
-                // e.g. ADD 0x1234 X
+                // e.g. ADD i16, $X
                 case 0x21:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        var immediate = GetImmediate16();
 
-                        var result = _registers[rX] + literal;
+                        var result = _registers[rX] + immediate;
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result > ushort.MaxValue;
                         Registers.Negative = false;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] + literal);
+                        _registers.Accumulator = (ushort)(_registers[rX] + immediate);
                     }
                     break;
                 // Subtracts the value of the first register from the second and stores the result in the accumulator.
-                // ZCN: Z C 1
+                // SZCN: 0 Z C 1
                 // 1 byte.
-                // e.g. SUB X Y
+                // e.g. SUB $X, $Y
                 case 0x22:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -305,55 +318,97 @@ namespace IkarosPC
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result < 0;
                         Registers.Negative = true;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] - _registers[rY]);
+                        _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Subtracts the value of the register from the literal value and stores the result in the accumulator.
-                // ZCN: Z C 1
+                // Subtracts the value of the register from the immediate value and stores the result in the accumulator.
+                // ZCN: 0 Z C 1
                 // 2 bytes.
-                // e.g. SUB X 0x1234
+                // e.g. SUB $X, i16
                 case 0x23:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        var immediate = GetImmediate16();
 
-                        var result = _registers[rX] - literal;
+                        var result = _registers[rX] - immediate;
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result < 0;
                         Registers.Negative = true;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] - literal);
+                        _registers.Accumulator = (ushort)result;
                     }
                     break;
-                // Subtracts the literal value from the value of the register and stores the result in the accumulator.
-                // ZCN: Z C 1
+                // Subtracts the immediate value from the value of the register and stores the result in the accumulator.
+                // SZCN: 0 Z C 1
                 // 2 bytes.
-                // e.g. SUB 0x1234 X
+                // e.g. SUB i16, $X
                 case 0x24:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
+                        var immediate = GetImmediate16();
 
-                        var result = literal - _registers[rX];
+                        var result = immediate - _registers[rX];
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result < 0;
                         Registers.Negative = true;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(literal - _registers[rX]);
+                        _registers.Accumulator = (ushort)result;
                     }
                     break;
+                // Increments the value of the register and stores the result back in the register.
+                // SZCN: 0 Z C 0
+                // 1 byte.
+                // e.g. INC $X
+                case 0x25:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var result = _registers[rX] + 1;
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = result > ushort.MaxValue;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers[rX] = (ushort)result;
+                    }
+                    break;
+                // Decrements the value of the register and stores the result back in the register.
+                // SZCN: 0 Z C 1
+                // 1 byte.
+                // e.g. INC $X
+                case 0x26:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var result = _registers[rX] - 1;
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = result < 0;
+                        Registers.Negative = true;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+
+                //
+                // Unsigned Arithmetic.
+                //
+
                 // Multiplies the values of the two registers and stores the result in the accumulator.
                 // ZCN: Z C 0
                 // 1 byte.
                 // e.g. MUL X Y
-                case 0x25:
+                case 0x30:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
@@ -363,8 +418,9 @@ namespace IkarosPC
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = result > ushort.MaxValue;
                         Registers.Negative = false;
+                        Registers.Signed = false;
 
-                        _registers.Accumulator = (ushort)(_registers[rX] * _registers[rY]);
+                        _registers.Accumulator = (ushort)result;
                     }
                     break;
                 // Multiplies the value of a register and a literal and stores the result in the accumulator.

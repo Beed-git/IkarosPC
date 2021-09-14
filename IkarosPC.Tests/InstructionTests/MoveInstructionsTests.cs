@@ -647,7 +647,7 @@ namespace IkarosPC.Tests.InstructionTests
         {
             _memory.SetInitialMemory(new ushort[]
             {
-                  // Load value into registers.
+                // Load value into registers.
                 0x1100, 0x1234,
                 0x1110, 0x0001,
                 0x1120, 0x0002,

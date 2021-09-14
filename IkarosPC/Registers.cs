@@ -116,6 +116,7 @@ namespace IkarosPC
             {
                 int u = 0;
 
+                u += Signed ? 0b1000 : 0;
                 u += Zero ? 0b0100 : 0;
                 u += Carry ? 0b0010 : 0;
                 u += Negative ? 0b0001 : 0;
@@ -124,6 +125,7 @@ namespace IkarosPC
             }
             set
             {
+                Signed = (value & 0b1000) > 0;
                 Zero = (value & 0b0100) > 0;
                 Carry = (value & 0b0010) > 0;
                 Negative = (value & 0b0001) > 0;
@@ -134,6 +136,7 @@ namespace IkarosPC
         public bool Zero { get; set; }
         public bool Carry { get; set; }
         public bool Negative { get; set; }
+        public bool Signed { get; set; }
 
         // General purpose registers
         public ushort A
