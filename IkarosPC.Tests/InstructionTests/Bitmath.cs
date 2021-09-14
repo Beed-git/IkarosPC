@@ -487,6 +487,7 @@ namespace IkarosPC.Tests.InstructionTests
                 0x1110, 0x0001,
                 0x1120, 0x0004,
                 0x1130, 0xFFFF,
+                0x1140, 0x0010,
                 // Left shift once.
                 0x5701,
                 // Left shift $ACC.
@@ -495,6 +496,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x5702,
                 // Check zero.
                 0x5703,
+                // Check zero and carry.
+                0x5704,
                 // Invalid register.
                 0x57FF
             });
@@ -503,54 +506,71 @@ namespace IkarosPC.Tests.InstructionTests
             _cpu.Step();
             _cpu.Step();
             _cpu.Step();
+            _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.PC == 10);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0004);
             Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
-
-            _cpu.Step();
-
-            Assert.IsTrue(_cpu.Registers.PC == 9);
-            Assert.IsTrue(_cpu.Registers.Accumulator == 0b1110_0001_0101_0010);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
-            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
-            Assert.IsTrue(_cpu.Registers.B == 0x0001);
-            Assert.IsTrue(_cpu.Registers.C == 0x0004);
-            Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
-
-            _cpu.Step();
-
-            Assert.IsTrue(_cpu.Registers.PC == 10);
-            Assert.IsTrue(_cpu.Registers.Accumulator == 0b1100_0010_1010_0100);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
-            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
-            Assert.IsTrue(_cpu.Registers.B == 0x0001);
-            Assert.IsTrue(_cpu.Registers.C == 0x0004);
-            Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 11);
-            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0000_1010_1001_0000);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0b1110_0001_0101_0010);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0004);
             Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 12);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0b1100_0010_1010_0100);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
+            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+            Assert.IsTrue(_cpu.Registers.C == 0x0004);
+            Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 13);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0000_1010_1001_0000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
+            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+            Assert.IsTrue(_cpu.Registers.C == 0x0004);
+            Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 14);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0100);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0004);
             Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 15);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0110);
+            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
+            Assert.IsTrue(_cpu.Registers.B == 0x0001);
+            Assert.IsTrue(_cpu.Registers.C == 0x0004);
+            Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
+            Assert.IsTrue(_cpu.Registers.E == 0x0010);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -571,7 +591,9 @@ namespace IkarosPC.Tests.InstructionTests
                 // Left shift by more than one.
                 0x5800, 0x0004,
                 // Check zero.
-                0x5803, 0xFFFF,
+                0x5800, 0xFFFF,
+                // Check zero and carry.
+                0x5800, 0x0010,
                 // Invalid register.
                 0x58FF, 0x1234
             });
@@ -587,21 +609,21 @@ namespace IkarosPC.Tests.InstructionTests
 
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0b1110_0001_0101_0010);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0b1100_0010_1010_0100);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 8);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0b0000_1010_1001_0000);
-            Assert.IsTrue(_cpu.Registers.Flags == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0010);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             _cpu.Step();
@@ -609,6 +631,13 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.PC == 10);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0100);
+            Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 12);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0110);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             // Test invalid register.
@@ -630,7 +659,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x5901,
                 // Right shift $ACC.
                 0x5981,
-                // Right shift by more than one.
+                // Set carry then right shift by 4.
+                0x2100, 0xFFFF,
                 0x5902,
                 // Check zero.
                 0x5903,
@@ -672,9 +702,10 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.D == 0xFFFF);
 
             _cpu.Step();
+            _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.PC == 11);
-            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0000_1111_0000_1010);
+            Assert.IsTrue(_cpu.Registers.PC == 13);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0001_1111_0000_1010);
             Assert.IsTrue(_cpu.Registers.Flags == 0);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
@@ -683,7 +714,7 @@ namespace IkarosPC.Tests.InstructionTests
 
             _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.PC == 12);
+            Assert.IsTrue(_cpu.Registers.PC == 14);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0100);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
@@ -707,7 +738,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x5A00, 0x0001,
                 // Right shift $ACC.
                 0x5A80, 0x0001,
-                // Right shift by more than one.
+                // Set carry then right shift by 4.
+                0x2100, 0xFFFF,
                 0x5A00, 0x0004,
                 // Check zero.
                 0x5A03, 0xFFFF,
@@ -737,15 +769,16 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             _cpu.Step();
+            _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.PC == 8);
-            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0000_1111_0000_1010);
+            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.Accumulator == 0b0001_1111_0000_1010);
             Assert.IsTrue(_cpu.Registers.Flags == 0);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);
 
             _cpu.Step();
 
-            Assert.IsTrue(_cpu.Registers.PC == 10);
+            Assert.IsTrue(_cpu.Registers.PC == 12);
             Assert.IsTrue(_cpu.Registers.Accumulator == 0);
             Assert.IsTrue(_cpu.Registers.Flags == 0b0100);
             Assert.IsTrue(_cpu.Registers.A == 0b1111_0000_1010_1001);

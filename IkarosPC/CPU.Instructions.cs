@@ -562,7 +562,7 @@ namespace IkarosPC
                     }
                     break;
                 // Logical left shift a register by another register and stores the result in $ACC.
-                // SZCN: 0 Z 0 0
+                // SZCN: 0 Z C 0
                 // 1 byte.
                 // e.g. LLS $X, $Y
                 case 0x57:
@@ -573,7 +573,7 @@ namespace IkarosPC
                         var result = _registers[rX] << _registers[rY];
 
                         Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
+                        Registers.Carry = (result & 0x10000) > 0;
                         Registers.Negative = false;
                         Registers.Signed = false;
 
@@ -581,7 +581,7 @@ namespace IkarosPC
                     }
                     break;
                 // Logical left shift a register by an immediate and stores the result in $ACC.
-                // SZCN: 0 Z 0 0
+                // SZCN: 0 Z C 0
                 // 1 byte.
                 // e.g. LLS $X, i16
                 case 0x58:
@@ -591,7 +591,7 @@ namespace IkarosPC
                         var result = _registers[rX] << GetImmediate16();
 
                         Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
+                        Registers.Carry = (result & 0x10000) > 0;
                         Registers.Negative = false;
                         Registers.Signed = false;
 
@@ -607,7 +607,8 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var result = _registers[rX] >> _registers[rY];
+                        var x = _registers[rX] + (Registers.Carry ? 0x10000 : 0);
+                        var result = x >> _registers[rY];
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = false;
@@ -625,7 +626,8 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var result = _registers[rX] >> GetImmediate16();
+                        var x = _registers[rX] + (Registers.Carry ? 0x10000 : 0);
+                        var result = x >> GetImmediate16() ;
 
                         Registers.Zero = ((ushort)result) == 0;
                         Registers.Carry = false;
