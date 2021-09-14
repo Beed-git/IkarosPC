@@ -561,6 +561,80 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
+                // Logical left shift a register by another register and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
+                // 1 byte.
+                // e.g. LLS $X, $Y
+                case 0x57:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var result = _registers[rX] << _registers[rY];
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical left shift a register by an immediate and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
+                // 1 byte.
+                // e.g. LLS $X, i16
+                case 0x58:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var result = _registers[rX] << GetImmediate16();
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical right shift a register by another register and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
+                // 1 byte.
+                // e.g. RLS $X, $Y
+                case 0x59:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var result = _registers[rX] >> _registers[rY];
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Logical right shift a register by an immediate and stores the result in $ACC.
+                // SZCN: 0 Z 0 0
+                // 1 byte.
+                // e.g. RLS $X, i16
+                case 0x5A:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var result = _registers[rX] >> GetImmediate16();
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = false;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
 
                 // Jump if the two registers are equal.
                 // 1 byte.
