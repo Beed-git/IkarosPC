@@ -646,7 +646,7 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var amount = (_registers[rY] % 0xF);
+                        var amount = (_registers[rY] % 0x10);
 
                         var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
 
@@ -661,7 +661,7 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var amount = (GetImmediate16() % 0xF);
+                        var amount = (GetImmediate16() % 0x10);
 
                         var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
 
@@ -677,7 +677,7 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var amount = (_registers[rY] % 0xF);
+                        var amount = (_registers[rY] % 0x10);
 
                         var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
 
@@ -692,9 +692,52 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var amount = (GetImmediate16() % 0xF);
+                        var amount = (GetImmediate16() % 0x10);
 
                         var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register left through carry by another register and store the result in $ACC.
+                // SZCN: 0 Z C 0
+                // 1 byte.
+                // e.g. RLC $X, $Y
+                case 0x5F:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var amount = _registers[rY] % 0x11;
+                        var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+
+                        var result = (number << amount) | (number >> (0x11 - amount));
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = (result & 0x10000) > 0;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
+
+                        _registers.Accumulator = (ushort)result;
+                    }
+                    break;
+                // Rotate a register left through carry by an immediate value and store the result in $ACC.
+                // SZCN: 0 Z C 0
+                // 2 bytes.
+                // e.g. RLC $X, i16
+                case 0x60:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var amount = GetImmediate16() % 0x11;
+                        var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+
+                        var result = (number << amount) | (number >> (0x11 - amount));
+
+                        Registers.Zero = ((ushort)result) == 0;
+                        Registers.Carry = (result & 0x10000) > 0;
+                        Registers.Negative = false;
+                        Registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
