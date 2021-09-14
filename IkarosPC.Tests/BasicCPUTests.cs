@@ -21,7 +21,7 @@ namespace IkarosPC.Tests
         }
 
         [Test]
-        public void TestCpuCanExecuteNOPInstruction()
+        public void CpuCanExecuteNOPInstruction()
         {
             // Sets first 16 bytes to 0.
             _memory.SetInitialMemory(new ushort[16]);
@@ -31,7 +31,7 @@ namespace IkarosPC.Tests
         }
 
         [Test]
-        public void TestGetInvalidRegister()
+        public void GetInvalidRegister()
         {
             _memory.SetInitialMemory(new ushort[]
             {
@@ -43,7 +43,7 @@ namespace IkarosPC.Tests
         }
 
         [Test]
-        public void TestCanPushOntoStack()
+        public void PushOntoStack()
         {
             _memory.SetInitialMemory(new ushort[]
             {
@@ -85,7 +85,7 @@ namespace IkarosPC.Tests
         }
 
         [Test]
-        public void TestCanPopOffStack()
+        public void PopOffStack()
         {
             _memory.SetInitialMemory(new ushort[]
             {
@@ -151,41 +151,47 @@ namespace IkarosPC.Tests
         }
 
         [Test]
-        public void TestFlagsRegister()
+        public void FlagsRegister()
         {
             // Get flags
             Assert.IsTrue(_cpu.Registers.Flags == 0);
 
+            _cpu.Registers.Signed = false;
             _cpu.Registers.Zero = true;
             _cpu.Registers.Carry = false;
             _cpu.Registers.Negative = false;
 
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000100);
 
+            _cpu.Registers.Signed = true;
             _cpu.Registers.Zero = false;
             _cpu.Registers.Carry = true;
             _cpu.Registers.Negative = false;
 
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000010);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001010);
 
+            _cpu.Registers.Signed = false;
             _cpu.Registers.Zero = false;
             _cpu.Registers.Carry = false;
             _cpu.Registers.Negative = true;
 
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000001);
 
+            _cpu.Registers.Signed = true;
             _cpu.Registers.Zero = true;
             _cpu.Registers.Carry = false;
             _cpu.Registers.Negative = true;
 
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000101);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001101);
 
+            _cpu.Registers.Signed = true;
             _cpu.Registers.Zero = true;
             _cpu.Registers.Carry = true;
             _cpu.Registers.Negative = true;
 
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001111);
 
+            _cpu.Registers.Signed = false;
             _cpu.Registers.Zero = true;
             _cpu.Registers.Carry = true;
             _cpu.Registers.Negative = false;
@@ -199,24 +205,24 @@ namespace IkarosPC.Tests
             _cpu.Registers.Flags = 0b00000111;
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
 
-            _cpu.Registers.Flags = 0b00000100;
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000100);
+            _cpu.Registers.Flags = 0b00001100;
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001100);
 
             _cpu.Registers.Flags = 0b00000001;
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000001);
 
             _cpu.Registers.Flags = 0b10101010;
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000010);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001010);
 
             _cpu.Registers.Flags = 0b11111111;
-            Assert.IsTrue(_cpu.Registers.Flags == 0b00000111);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b00001111);
 
-            _cpu.Registers.Flags = 0b11111000;
+            _cpu.Registers.Flags = 0b11110000;
             Assert.IsTrue(_cpu.Registers.Flags == 0b00000000);
         }
 
         [Test]
-        public void TestStopped()
+        public void Stopped()
         {
             _memory.SetInitialMemory(new ushort[]
             {

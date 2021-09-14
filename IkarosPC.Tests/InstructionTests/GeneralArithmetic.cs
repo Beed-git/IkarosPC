@@ -524,7 +524,6 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.Flags == 0b0001);
             Assert.IsTrue(_cpu.Registers.A == 0x0FFF);
             Assert.IsTrue(_cpu.Registers.B == 0xFFFE);
-
             
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
