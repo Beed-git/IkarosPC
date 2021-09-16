@@ -125,5 +125,234 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
         }
 
+        // 0x73
+        [Test]
+        public void JumpToi16IfTwoRegistersEqual()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x1235,
+                0x1120, 0x1235,
+                // Jump if equal (should fail.)
+                0x7301, 0x2000,
+                // Jump if equal (should pass.)
+                0x7312, 0x4000,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x4000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+        }
+
+        // 0x74
+        [Test]
+        public void JumpToRegisterIfRegisterIsZero()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x2000,
+                0x1120, 0x0000,
+                // Jump if equal (should fail.)
+                0x7401,
+                // Jump if equal (should pass.)
+                0x7421,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+        }
+
+        // 0x75
+        [Test]
+        public void JumpToi16IfRegisterIsZero()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x0000,
+                // Jump if equal (should fail.)
+                0x7501, 0x1000,
+                // Jump if equal (should pass.)
+                0x7521, 0x2000,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+        }
+
+        // 0x76
+        [Test]
+        public void JumpToi16IfTwoRegistersNotEqual()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x1235,
+                0x1120, 0x1235,
+                // Jump if not equal (should fail.)
+                0x7612, 0x2000,
+                // Jump if not equal (should pass.)
+                0x7601, 0x4000,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 8);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x4000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x1235);
+            Assert.IsTrue(_cpu.Registers.C == 0x1235);
+        }
+
+        // 0x77
+        [Test]
+        public void JumpToRegisterIfRegisterIsNotZero()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x2000,
+                0x1120, 0x0000,
+                // Jump if equal (should fail.)
+                0x7721,
+                // Jump if equal (should pass.)
+                0x7701,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 7);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.C == 0x0000);
+        }
+
+        // 0x78
+        [Test]
+        public void JumpToi16IfRegisterIsNotZero()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x0000,
+                // Jump if equal (should fail.)
+                0x7821, 0x1000,
+                // Jump if equal (should pass.)
+                0x7801, 0x2000,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 4);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x0000);
+        }
     }
 }
