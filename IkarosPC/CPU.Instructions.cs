@@ -1201,6 +1201,86 @@ namespace IkarosPC
                         }
                     }
                     break;
+                //
+                // Jump Unsigned
+                //
+
+                // Check if a register is greater than (above) another register, if so jump to a memory location specified by an immediate value.
+                // 2 byte.
+                // e.g. JA $X, $Y, i16
+                case 0x90:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x > y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is less than (below) another register, if so jump to a memory location specified by an immediate value.
+                // 2 byte.
+                // e.g. JB $X, $Y, i16
+                case 0x91:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x < y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is greater than (above) or equal to another register, if so jump to a memory location specified by an immediate value.
+                // 2 byte.
+                // e.g. JAE $X, $Y, i16
+                case 0x92:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x >= y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is less than (below) or equal to another register, if so jump to a memory location specified by an immediate value.
+                // 2 byte.
+                // e.g. JBE $X, $Y, i16
+                case 0x93:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x <= y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
         }
