@@ -795,9 +795,45 @@ namespace IkarosPC
                         _registers.Accumulator = (ushort)result;
                     }
                     break;
+
+                //
+                //  Jump.
+                //
+
+                // Jump to an address specified by register.
+                // 1 byte.
+                // e.g. JMP ($X)
+                case 0x70:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        _registers.PC = _registers[rX];
+                    }
+                    break;
+                // Jump to an address specified by register.
+                // 1 byte.
+                // e.g. JMP (i16)
+                case 0x71:
+                    {
+                        _registers.PC = GetImmediate16();
+                    }
+                    break;
+                // Jump to an adress at a specified address plus an offset.
+                case 0x72:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+
+                        var address = (ushort)(_registers[rX] + immediate);
+
+                        _registers.PC = address;
+                    }
+                    break;
+
                 // Jump if the two registers are equal.
                 // 1 byte.
-                // e.g. JEQ X, Y
+                // e.g. JEQ $X, $Y, (i16)
 
                 // e.g. JEQ X, 0x1234
                 case 0xF0:
