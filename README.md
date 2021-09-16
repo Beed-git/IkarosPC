@@ -99,12 +99,21 @@ insn, source, destination
 	- 0x7AFN - 1 byte - JF ?F, $X
 	- 0x7BF0 - 2 byte - JNF ?F, i16
 	- 0x7CFN - 1 byte - JNF ?F, $X
-#### Jump Extended:
+#### Jump Signed:
 	- 0x80NN - 2 byte - JG  $X, $Y, i16
 	- 0x81NN - 1 byte - JGZ  $X, $Y
-	- 0x82NN - 2 byte - JL  $X, $Y, i16
-	- 0x83NN - 1 byte - JLZ  $X, $Y
-	- 0x84NN - 2 byte - JGE  $X, $Y, i16
-	- 0x85NN - 1 byte - JGEZ  $X, $Y
-	- 0x86NN - 2 byte - JLE  $X, $Y, i16
-	- 0x87NN - 1 byte - JLEZ  $X, $Y
+	- 0x82N0 - 2 byte - JGZ  $X, i16
+	- 0x83NN - 2 byte - JL  $X, $Y, i16
+	- 0x84NN - 1 byte - JLZ  $X, $Y
+	- 0x85N0 - 2 byte - JLZ  $X, i16
+	- 0x86NN - 2 byte - JGE  $X, $Y, i16
+	- 0x87NN - 1 byte - JGEZ  $X, $Y
+	- 0x88N0 - 2 byte - JGEZ  $X, i16
+	- 0x89NN - 2 byte - JLE  $X, $Y, i16
+	- 0x8ANN - 1 byte - JLEZ  $X, $Y
+	- 0x8BN0 - 2 byte - JLEZ  $X, i16
+#### Jump Unsigned
+	- 0x90NN - 2 byte - JA  $X, $Y, i16
+	- 0x91NN - 2 byte - JB  $X, $Y, i16
+	- 0x92NN - 2 byte - JAE  $X, $Y, i16
+	- 0x93NN - 2 byte - JBE  $X, $Y, i16
