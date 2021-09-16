@@ -1213,8 +1213,8 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var x = (short)_registers[rX];
-                        var y = (short)_registers[rY];
+                        var x = _registers[rX];
+                        var y = _registers[rY];
 
                         var immediate = GetImmediate16();
 
@@ -1232,8 +1232,8 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var x = (short)_registers[rX];
-                        var y = (short)_registers[rY];
+                        var x = _registers[rX];
+                        var y = _registers[rY];
 
                         var immediate = GetImmediate16();
 
@@ -1251,8 +1251,8 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var x = (short)_registers[rX];
-                        var y = (short)_registers[rY];
+                        var x = _registers[rX];
+                        var y = _registers[rY];
 
                         var immediate = GetImmediate16();
 
@@ -1270,8 +1270,8 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var x = (short)_registers[rX];
-                        var y = (short)_registers[rY];
+                        var x = _registers[rX];
+                        var y = _registers[rY];
 
                         var immediate = GetImmediate16();
 
