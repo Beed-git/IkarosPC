@@ -988,19 +988,6 @@ namespace IkarosPC
                         }
                     }
                     break;
-                // e.g. JEQ X, 0x1234
-                case 0xF0:
-                    {
-                        // REMOVE ME
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-
-                        var literal = _memory.Ram[_registers.PC];
-                        _registers.PC++;
-
-                        if (_registers[rX] != 0)
-                            _registers.PC = literal;
-                    }
-                    break;
 
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
