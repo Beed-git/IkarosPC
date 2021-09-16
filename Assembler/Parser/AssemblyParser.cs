@@ -18,7 +18,7 @@ namespace IkarosAssembler.Parser
 
                 var noComments = RemoveComments(line);
 
-                if (noComments is null)
+                if (string.IsNullOrWhiteSpace(noComments))
                     continue;
 
                 var insn = GetFirstWord(noComments);
@@ -93,12 +93,21 @@ namespace IkarosAssembler.Parser
         private static string[] ParseArguments(string line)
         {
             var lineSplit = line.Split(',');
-
-            var args = new string[lineSplit.Length];
+            var lineSplitClean = new List<string>();
 
             for (int i = 0; i < lineSplit.Length; i++)
             {
-                var argument = lineSplit[i].Trim();
+                if (string.IsNullOrEmpty(lineSplit[i]))
+                    continue;
+
+                lineSplitClean.Add(lineSplit[i]);
+            }
+
+            var args = new string[lineSplitClean.Count];
+
+            for (int i = 0; i < lineSplitClean.Count; i++)
+            {
+                var argument = lineSplitClean[i].Trim();
 
                 args[i] = argument;
             }

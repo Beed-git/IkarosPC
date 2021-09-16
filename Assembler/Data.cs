@@ -64,7 +64,7 @@ namespace IkarosAssembler
             new("PUSH_IMM", 0x03, 2),
             new("POP_REG", 0x04, 1),
             new("CALL_REG", 0x05, 1),
-            new("CALL_IMM", 0x06, 2),
+            new("CALL_PTR_IMM", 0x06, 2),   // Work around.
             new("RET", 0x07, 1),
             // Move instructions.
             new("MOV_REG_REG", 0x10, 1),
