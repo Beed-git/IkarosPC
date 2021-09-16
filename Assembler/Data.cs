@@ -31,7 +31,8 @@ namespace IkarosAssembler
             "AND", "OR", "XOR", "NOT",
             "LLS", "LRS", "ROL", "ROR", "RLC", "RRC",
             "JMP", "JEQ", "JNEQZ", "JF", "JNF",
-            "JG", "JGZ", "JL", "JLZ", "JGE", "JGEZ", "JLE", "JLEZ"
+            "JG", "JGZ", "JL", "JLZ", "JGE", "JGEZ", "JLE", "JLEZ",
+            "JA", "JB", "JAE", "JBE",
         };
 
         private static readonly string[] _instructionFormats = new string[]
@@ -148,7 +149,7 @@ namespace IkarosAssembler
             new("JF_FLAG_IMM", 0x7A, 2),
             new("JNF_FLAG_REG", 0x7B, 1),
             new("JNF_FLAG_IMM", 0x7C, 2),
-            // Jump extended.
+            // Jump signed.
             new("JG_REG_REG_IMM", 0x80, 2),
             new("JGZ_REG_REG", 0x81, 1),
             new("JGZ_REG_IMM", 0x82, 2),
@@ -161,6 +162,11 @@ namespace IkarosAssembler
             new("JLE_REG_REG_IMM", 0x89, 2),
             new("JLEZ_REG_REG", 0x8A, 1),
             new("JLEZ_REG_IMM", 0x8B, 2),
+            // Jump Unsigned
+            new("JA_REG_REG_IMM", 0x90, 2),
+            new("JB_REG_REG_IMM", 0x91, 2),
+            new("JAE_REG_REG_IMM", 0x92, 2),
+            new("JBE_REG_REG_IMM", 0x93, 2),
         };
     }
 }
