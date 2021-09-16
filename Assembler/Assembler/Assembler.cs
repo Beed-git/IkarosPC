@@ -85,7 +85,7 @@ namespace IkarosAssembler.Assemble
 
                     if (arg.Value.EndsWith(":"))
                     {
-                        full = ((ushort)_addressLookup[arg.Value]);
+                        full = (ushort)_addressLookup[arg.Value];
                     }
                     else
                     {

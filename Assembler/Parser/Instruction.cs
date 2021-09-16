@@ -59,12 +59,6 @@ namespace IkarosAssembler.Parser
                     argument = ParseNumberToHexString(argument);
                 }
 
-                // If argument contains label set pointer to true
-                if (argument.EndsWith(':'))
-                {
-                    isPointer = true;
-                }
-
                 ArgType argtype;
                 if (argument.StartsWith("$"))
                 {

@@ -88,8 +88,6 @@ namespace IkarosAssembler.Parser
             return new(firstWord, restOfString);
         }
 
-        // private record ArgumentInfo(string argument, bool IsPointer);
-
         private static string[] ParseArguments(string line)
         {
             var lineSplit = line.Split(',');
@@ -113,37 +111,6 @@ namespace IkarosAssembler.Parser
             }
 
             return args;
-
-            //var args = new ArgumentInfo[lineSplit.Length];
-                
-            //for (int i = 0; i < lineSplit.Length; i++)
-            //{
-            //    var argument = lineSplit[i].Trim();
-            //    var isPointer = false;
-
-            //    // Remove brackets and set isPointer to true.
-            //    if (argument.StartsWith("("))
-            //    {
-            //        isPointer = true;
-            //        argument = argument.Substring(1, argument.Length - 1);
-            //    }
-
-            //    // Ghetto work around for i16 + $X
-            //    if (argument.Contains("+"))
-            //    {
-            //        throw new NotImplementedException("0x1CNN & 0x1DNN are not yet implemented.");
-            //    }
-
-            //    // Convert number argument to 0000 formatted hex number.
-            //    if (Helpers.IsNumber(argument))
-            //    {
-            //        argument = Helpers.ParseNumberToHexString(argument);
-            //    }
-
-            //    args[i] = new(argument, isPointer);
-            //}
-
-            //return args;
         }
     }
 }

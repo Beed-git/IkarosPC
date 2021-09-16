@@ -811,7 +811,7 @@ namespace IkarosPC
                     }
                     break;
                 // Jump to an address specified by register.
-                // 1 byte.
+                // 2 byte.
                 // e.g. JMP (i16)
                 case 0x71:
                     {
@@ -819,6 +819,8 @@ namespace IkarosPC
                     }
                     break;
                 // Jump to an adress at a specified address plus an offset.
+                // 2 byte.
+                // e.g. JMP (i16) + $X
                 case 0x72:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -830,11 +832,96 @@ namespace IkarosPC
                         _registers.PC = address;
                     }
                     break;
-
-                // Jump if the two registers are equal.
+                // Jump to an immediate value if two registers are equal.
                 // 1 byte.
                 // e.g. JEQ $X, $Y, (i16)
+                case 0x73:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
 
+                        var immediate = GetImmediate16();
+
+                        if (_registers[rX] == _registers[rY])
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is equal to zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JEQZ $X, $Y
+                case 0x74:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        if (_registers[rX] == 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is equal to zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JEQZ $X, i16
+                case 0x75:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+
+                        if (_registers[rX] == 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Jump to an immediate value if two registers are not equal.
+                // 1 byte.
+                // e.g. JNEQ $X, $Y, (i16)
+                case 0x76:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var immediate = GetImmediate16();
+
+                        if (_registers[rX] != _registers[rY])
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is not equal to zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JNEQZ $X, $Y
+                case 0x77:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        if (_registers[rX] != 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is not equal to zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JNEQZ $X, i16
+                case 0x78:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+
+                        if (_registers[rX] != 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
                 // e.g. JEQ X, 0x1234
                 case 0xF0:
                     {
