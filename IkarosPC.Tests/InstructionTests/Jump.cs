@@ -354,5 +354,159 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0x0000);
         }
+
+        // 0x79
+        [Test]
+        public void JumpToRegisterIfFlagSet()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x2000,
+                // Set zero bit.
+                0x2200,
+                // Jump if carry set (should fail.)
+                0x7911,
+                // Jump if zero set (should pass.)
+                0x7921,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+        }
+
+        // 0x7A
+        [Test]
+        public void JumpToi16IfFlagSet()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                // Set zero bit.
+                0x2200,
+                // Jump if carry set (should fail.)
+                0x7A10, 0x2000,
+                // Jump if zero set (should pass.)
+                0x7A20, 0x2000
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+        }
+
+        // 0x7B
+        [Test]
+        public void JumpToRegisterIfFlagNotSet()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                0x1110, 0x2000,
+                // Set zero bit.
+                0x2200,
+                // Jump if zero set (should fail.)
+                0x7B21,
+                // Jump if carry set (should pass.)
+                0x7B11,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 6);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.B == 0x2000);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+        }
+
+        // 0x7A
+        [Test]
+        public void JumpToi16IfFlagNotSet()
+        {
+            _memory.SetInitialMemory(new ushort[]
+            {
+                // Init registers.
+                0x1100, 0x1234,
+                // Set zero bit.
+                0x2200,
+                // Jump if zero set (should fail.)
+                0x7C20, 0x2000,
+                // Jump if carry set (should pass.)
+                0x7C10, 0x2000,
+            });
+
+            _cpu.Step();
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 3);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 5);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+
+            _cpu.Step();
+
+            Assert.IsTrue(_cpu.Registers.PC == 0x2000);
+            Assert.IsTrue(_cpu.Registers.A == 0x1234);
+            Assert.IsTrue(_cpu.Registers.Flags == 0b0101);
+        }
     }
 }

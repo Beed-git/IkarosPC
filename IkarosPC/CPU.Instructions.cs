@@ -922,6 +922,72 @@ namespace IkarosPC
                         }
                     }
                     break;
+                // If a specified flag bit is set, jump to a location in memory specified by a register.
+                // 1 byte.
+                // e.g. JF ?F, i16
+                case 0x79:
+                    {
+                        var flag = (byte)((opcode & 0x00F0) >> 4);
+                        var rX = (byte)(opcode & 0x000F);
+
+                        var result = ((_registers.Flags >> flag) & 0x1) > 0;
+
+                        if (result)
+                        {
+                            _registers.PC = _registers[rX];
+                        }
+                    }
+                    break;
+                // If a specified flag bit is set, jump to a location in memory specified by an immediate value.
+                // 2 byte.
+                // e.g. JF ?F, i16
+                case 0x7A:
+                    {
+                        byte flag = (byte)((opcode & 0x00F0) >> 4);
+
+                        var immediate = GetImmediate16();
+
+                        var result = ((_registers.Flags >> flag) & 0x1) > 0;
+
+                        if (result)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // If a specified flag bit is not set, jump to a location in memory specified by a register.
+                // 1 byte.
+                // e.g. JNF ?F, i16
+                case 0x7B:
+                    {
+                        byte flag = (byte)((opcode & 0x00F0) >> 4);
+                        byte rX = (byte)(opcode & 0x000F);
+
+                        var result = ((_registers.Flags >> flag) & 0x1) > 0;
+
+                        if (!result)
+                        {
+                            _registers.PC = _registers[rX];
+                        }
+                    }
+                    break;
+                // If a specified flag bit is not set, jump to a location in memory specified by an immediate value.
+                // 2 byte.
+                // e.g. JNF ?F, i16
+                case 0x7C:
+                    {
+                        byte flag = (byte)((opcode & 0x00F0) >> 4);
+                        
+                        var immediate = GetImmediate16();
+
+                        var result = ((_registers.Flags >> flag) & 0x1) > 0;
+
+                        if (!result)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
                 // e.g. JEQ X, 0x1234
                 case 0xF0:
                     {
