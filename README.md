@@ -35,7 +35,7 @@ insn, source, destination
 	- 0x13N0 - 2 byte - MOV (i16), $Y
 	- 0x14NN - 1 byte - MOV $X, ($Y)
 	- 0x15N0 - 2 byte - MOV i16, ($Y)
-	- 0x16NN - 2 byte - MOV $X, (i16)
+	- 0x16N0 - 2 byte - MOV $X, (i16)
 	- 0x1700 - 3 byte - MOV i16, (i16)
 	- 0x18NN - 1 byte - MOV ($X), ($Y)
 	- 0x19N0 - 2 byte - MOV ($X), (i16)
@@ -68,14 +68,14 @@ insn, source, destination
 	- 0x44N0 - 2 byte - DIV i16, $X
 	- 0x45NN - 1 byte - MOD $X, $Y
 	- 0x46N0 - 2 byte - MOD $X, i16
-	- 0x40N0 - 2 byte - MOD i16, $X
+	- 0x47N0 - 2 byte - MOD i16, $X
 #### Bit Arithmetic
-	- 0x50N0 - 1 byte - AND $X, $Y
-	- 0x51NN - 2 byte - AND $X, i16
-	- 0x52N0 - 1 byte - OR $X, $Y
-	- 0x53NN - 2 byte - OR $X, i16
-	- 0x54N0 - 1 byte - XOR $X, $Y
-	- 0x55NN - 2 byte - XOR $X, i16
+	- 0x50NN - 1 byte - AND $X, $Y
+	- 0x51N0 - 2 byte - AND $X, i16
+	- 0x52NN - 1 byte - OR $X, $Y
+	- 0x53N0 - 2 byte - OR $X, i16
+	- 0x54NN - 1 byte - XOR $X, $Y
+	- 0x55N0 - 2 byte - XOR $X, i16
 	- 0x56N0 - 1 byte - NOT $X
 	- 0x57NN - 1 byte - LLS $X, $Y
 	- 0x58N0 - 2 byte - LLS $X, i16
@@ -90,21 +90,21 @@ insn, source, destination
 	- 0x7100 - 2 byte - JMP (i16)
 	- 0x72N0 - 2 byte - JMP (i16 + $X)
 	- 0x73NN - 2 byte - JEQ  $X, $Y, (i16)
-	- 0x74NN - 2 byte - JEQZ  $X, ($Y)
+	- 0x74NN - 1 byte - JEQZ  $X, ($Y)
 	- 0x75N0 - 2 byte - JEQZ  $X, (i16)
 	- 0x76NN - 2 byte - JNEQ  $X, $Y, (i16)
-	- 0x77NN - 2 byte - JNEQZ  $X, ($Y)
+	- 0x77NN - 1 byte - JNEQZ  $X, ($Y)
 	- 0x78N0 - 2 byte - JNEQZ  $X, (i16)
-	- 0x79NF - 2 byte - JF ?F, (i16)
-	- 0x7ANF - 1 byte - JF ?F, ($X)
-	- 0x7BNF - 2 byte - JNF ?F, (i16)
-	- 0x7CNF - 1 byte - JNF ?F, ($X)
+	- 0x79F0 - 2 byte - JF ?F, (i16)
+	- 0x7AFN - 1 byte - JF ?F, ($X)
+	- 0x7BF0 - 2 byte - JNF ?F, (i16)
+	- 0x7CFN - 1 byte - JNF ?F, ($X)
 #### Jump Extended:
 	- 0x80NN - 2 byte - JG  $X, $Y, (i16)
-	- 0x81NN - 2 byte - JGZ  $X, ($Y)
+	- 0x81NN - 1 byte - JGZ  $X, ($Y)
 	- 0x82NN - 2 byte - JL  $X, $Y, (i16)
-	- 0x83NN - 2 byte - JLZ  $X, ($Y)
+	- 0x83NN - 1 byte - JLZ  $X, ($Y)
 	- 0x84NN - 2 byte - JGE  $X, $Y, (i16)
-	- 0x85NN - 2 byte - JGEZ  $X, ($Y)
+	- 0x85NN - 1 byte - JGEZ  $X, ($Y)
 	- 0x86NN - 2 byte - JLE  $X, $Y, (i16)
-	- 0x87NN - 2 byte - JLEZ  $X, ($Y)
+	- 0x87NN - 1 byte - JLEZ  $X, ($Y)
