@@ -802,7 +802,7 @@ namespace IkarosPC
 
                 // Jump to an address specified by register.
                 // 1 byte.
-                // e.g. JMP ($X)
+                // e.g. JMP $X
                 case 0x70:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -812,7 +812,7 @@ namespace IkarosPC
                     break;
                 // Jump to an address specified by register.
                 // 2 byte.
-                // e.g. JMP (i16)
+                // e.g. JMP i16
                 case 0x71:
                     {
                         _registers.PC = GetImmediate16();
@@ -820,7 +820,7 @@ namespace IkarosPC
                     break;
                 // Jump to an adress at a specified address plus an offset.
                 // 2 byte.
-                // e.g. JMP (i16) + $X
+                // e.g. JMP i16 + $X
                 case 0x72:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -834,7 +834,7 @@ namespace IkarosPC
                     break;
                 // Jump to an immediate value if two registers are equal.
                 // 1 byte.
-                // e.g. JEQ $X, $Y, (i16)
+                // e.g. JEQ $X, $Y, i16
                 case 0x73:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -879,7 +879,7 @@ namespace IkarosPC
                     break;
                 // Jump to an immediate value if two registers are not equal.
                 // 1 byte.
-                // e.g. JNEQ $X, $Y, (i16)
+                // e.g. JNEQ $X, $Y, i16
                 case 0x76:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
@@ -989,6 +989,218 @@ namespace IkarosPC
                     }
                     break;
 
+                //
+                //  Jump Signed
+                //
+
+                // Jump to an immediate value if the first register is greater than the other.
+                // 1 byte.
+                // e.g. JG $X, $Y, i16
+                case 0x80:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x > y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is greater than zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JGZ $X, $Y
+                case 0x81:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+
+                        if (x > 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is greater than zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JGZ $X, i16
+                case 0x82:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var x = (short)_registers[rX];
+
+                        var immediate = GetImmediate16();
+
+                        if (x > 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Jump to an immediate value if the first register is less than the other.
+                // 1 byte.
+                // e.g. JL $X, $Y, i16
+                case 0x83:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x < y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is less than zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JLZ $X, $Y
+                case 0x84:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+
+                        if (x < 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is less than zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JLZ $X, i16
+                case 0x85:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var x = (short)_registers[rX];
+
+                        var immediate = GetImmediate16();
+
+                        if (x < 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Jump to an immediate value if the first register is greater than or equal to the other.
+                // 1 byte.
+                // e.g. JGE $X, $Y, i16
+                case 0x86:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x >= y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is greater than or equal to zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JGEZ $X, $Y
+                case 0x87:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+
+                        if (x >= 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is greater than or equal to zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JGEZ $X, i16
+                case 0x88:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var x = (short)_registers[rX];
+
+                        var immediate = GetImmediate16();
+
+                        if (x >= 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Jump to an immediate value if the first register is less than or equal to the other.
+                // 1 byte.
+                // e.g. JLE $X, $Y, i16
+                case 0x89:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+                        var y = (short)_registers[rY];
+
+                        var immediate = GetImmediate16();
+
+                        if (x <= y)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
+                // Check if a register is less than or equal to zero, if so jump to a location in memory specified by another register.
+                // 1 byte.
+                // e.g. JLEZ $X, $Y
+                case 0x8A:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        var x = (short)_registers[rX];
+
+                        if (x <= 0)
+                        {
+                            _registers.PC = _registers[rY];
+                        }
+                    }
+                    break;
+                // Check if a register is less than or equal to zero, if so jump to a location in memory specified by an immediate value.
+                // 2 bytes.
+                // e.g. JLEZ $X, i16
+                case 0x8B:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+
+                        var x = (short)_registers[rX];
+
+                        var immediate = GetImmediate16();
+
+                        if (x <= 0)
+                        {
+                            _registers.PC = immediate;
+                        }
+                    }
+                    break;
                 default: throw new NotImplementedException($"Opcode: { opcode } not implemented or does not exist.");
             }
         }
