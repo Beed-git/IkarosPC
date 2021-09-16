@@ -48,7 +48,7 @@ namespace IkarosPC.Tests.InstructionTests
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Call subroutine
-                0x0500, 0x3000,
+                0x0600, 0x3000,
                 // Finished
 
             });
@@ -66,7 +66,7 @@ namespace IkarosPC.Tests.InstructionTests
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Nested subroutine call. (Gets the value 5)
-                0x0500, 0x5000,
+                0x0600, 0x5000,
                 // Move value from accumulator into register A
                 0x1080,
                 // Add 3 to value
@@ -234,7 +234,7 @@ namespace IkarosPC.Tests.InstructionTests
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Call subroutine
-                0x0630,
+                0x0530,
                 // Push random value to stack
                 0x0300, 0x1F1F,
             });
@@ -255,7 +255,7 @@ namespace IkarosPC.Tests.InstructionTests
                 // Push 0 arguments to stack.
                 0x0300, 0x0000,
                 // Nested subroutine call. (Gets the value 5)
-                0x0640,
+                0x0540,
                 // Move value from accumulator into register A
                 0x1080,
                 // Add 3 to value

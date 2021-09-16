@@ -61,10 +61,21 @@ namespace IkarosPC
                         _registers[rX] = Pop();
                     }
                     break;
+                // Calls a subroutine from a register
+                // 2 bytes.
+                // e.g. CALL $X:
+                case 0x05:
+                    {
+                        SaveStackState();
+
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        _registers.PC = _registers[rX];
+                    }
+                    break;
                 // Calls a subroutine from an immediate value. 
                 // 2 bytes.
                 // e.g. CALL i16:
-                case 0x05:
+                case 0x06:
                     {
                         var immediate = GetImmediate16();
 
@@ -72,17 +83,6 @@ namespace IkarosPC
                         SaveStackState();
 
                         _registers.PC = immediate;
-                    }
-                    break;
-                // Calls a subroutine from a register
-                // 2 bytes.
-                // e.g. CALL $X:
-                case 0x06:
-                    {
-                        SaveStackState();
-
-                        byte rX = (byte)((opcode & 0x00F0) >> 4);
-                        _registers.PC = _registers[rX];
                     }
                     break;
                 // Returns from a subroutine.
