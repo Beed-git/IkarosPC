@@ -86,25 +86,25 @@ insn, source, destination
 	- 0x5DNN - 1 byte - RLSC $X, $Y
 	- 0x5EN0 - 2 byte - RLSC $X, i16
 #### Jump
-	- 0x70N0 - 1 byte - JMP ($X)
-	- 0x7100 - 2 byte - JMP (i16)
-	- 0x72N0 - 2 byte - JMP (i16 + $X)
-	- 0x73NN - 2 byte - JEQ  $X, $Y, (i16)
-	- 0x74NN - 1 byte - JEQZ  $X, ($Y)
-	- 0x75N0 - 2 byte - JEQZ  $X, (i16)
-	- 0x76NN - 2 byte - JNEQ  $X, $Y, (i16)
-	- 0x77NN - 1 byte - JNEQZ  $X, ($Y)
-	- 0x78N0 - 2 byte - JNEQZ  $X, (i16)
-	- 0x79F0 - 2 byte - JF ?F, (i16)
-	- 0x7AFN - 1 byte - JF ?F, ($X)
-	- 0x7BF0 - 2 byte - JNF ?F, (i16)
-	- 0x7CFN - 1 byte - JNF ?F, ($X)
+	- 0x70N0 - 1 byte - JMP $X
+	- 0x7100 - 2 byte - JMP i16
+	- 0x72N0 - 2 byte - JMP i16 + $X
+	- 0x73NN - 2 byte - JEQ  $X, $Y, i16
+	- 0x74NN - 1 byte - JEQZ  $X, $Y
+	- 0x75N0 - 2 byte - JEQZ  $X, i16
+	- 0x76NN - 2 byte - JNEQ  $X, $Y, i16
+	- 0x77NN - 1 byte - JNEQZ  $X, $Y
+	- 0x78N0 - 2 byte - JNEQZ  $X, i16
+	- 0x79F0 - 2 byte - JF ?F, i16
+	- 0x7AFN - 1 byte - JF ?F, $X
+	- 0x7BF0 - 2 byte - JNF ?F, i16
+	- 0x7CFN - 1 byte - JNF ?F, $X
 #### Jump Extended:
-	- 0x80NN - 2 byte - JG  $X, $Y, (i16)
-	- 0x81NN - 1 byte - JGZ  $X, ($Y)
-	- 0x82NN - 2 byte - JL  $X, $Y, (i16)
-	- 0x83NN - 1 byte - JLZ  $X, ($Y)
-	- 0x84NN - 2 byte - JGE  $X, $Y, (i16)
-	- 0x85NN - 1 byte - JGEZ  $X, ($Y)
-	- 0x86NN - 2 byte - JLE  $X, $Y, (i16)
-	- 0x87NN - 1 byte - JLEZ  $X, ($Y)
+	- 0x80NN - 2 byte - JG  $X, $Y, i16
+	- 0x81NN - 1 byte - JGZ  $X, $Y
+	- 0x82NN - 2 byte - JL  $X, $Y, i16
+	- 0x83NN - 1 byte - JLZ  $X, $Y
+	- 0x84NN - 2 byte - JGE  $X, $Y, i16
+	- 0x85NN - 1 byte - JGEZ  $X, $Y
+	- 0x86NN - 2 byte - JLE  $X, $Y, i16
+	- 0x87NN - 1 byte - JLEZ  $X, $Y
