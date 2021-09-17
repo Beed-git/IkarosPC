@@ -9,10 +9,8 @@ namespace IkarosPC
     public class Registers
     {
         private ushort[] _registers;
+        private ushort[] _specialRegisters;
 
-        private ushort _pc;
-        private ushort _sp;
-        private ushort _fp;
         private ushort _stackFrameSize;
 
         private readonly ushort _topOfStack;
@@ -24,6 +22,8 @@ namespace IkarosPC
         {
             // Represents the 8 general-purpose registers plus the accumulator.
             _registers = new ushort[9];
+            // $PC, $SP, $FP, $MBC
+            _specialRegisters = new ushort[4];
 
             _topOfStack = 0xC000 - 1;
         }
@@ -69,6 +69,9 @@ namespace IkarosPC
             }
         }
 
+        // Get special register by value.
+        public ushort[] Special => _specialRegisters;
+
         // Special Registers
 
         // Accumulator - Most math functions put result in this register.
@@ -81,22 +84,29 @@ namespace IkarosPC
         // Program counter.
         public ushort PC
         {
-            get => _pc;
-            set => _pc = value;
+            get => _specialRegisters[0];
+            set => _specialRegisters[0] = value;
         }
 
         // Stack pointer.
         public ushort SP
         {
-            get => _sp;
-            set => _sp = value;
+            get => _specialRegisters[1];
+            set => _specialRegisters[1] = value;
         }
 
         // Frame pointer.
         public ushort FP
         {
-            get => _fp;
-            set => _fp = value;
+            get => _specialRegisters[2];
+            set => _specialRegisters[2] = value;
+        }
+
+        // Memory bank controller
+        public ushort MBC
+        {
+            get => _specialRegisters[3];
+            set => _specialRegisters[3] = value;
         }
 
         // Tracks the size of the current stack frame. Should never be touched by the user. Shouldn't be used outside of Pop, Push, LoadState, and SaveState.

@@ -93,7 +93,28 @@ namespace IkarosPC
                         LoadStackState();
                     }
                     break;
+                // Moves the value of a general register into a special register.
+                // 1 byte.
+                // e.g. MOVGS $X, $Y
+                case 0x08:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
 
+                        _registers.Special[rY] = _registers[rX];
+                    }
+                    break;
+                // Moves the value of a special register into a general register.
+                // 1 byte.
+                // e.g. MOVSG $X, $Y
+                case 0x09:
+                    {
+                        byte rX = (byte)((opcode & 0x00F0) >> 4);
+                        byte rY = (byte)(opcode & 0x000F);
+
+                        _registers[rY] = _registers.Special[rX];
+                    }
+                    break;
                 //
                 // Move
                 //
