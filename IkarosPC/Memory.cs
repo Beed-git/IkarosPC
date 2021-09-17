@@ -16,6 +16,17 @@ namespace IkarosPC
         private readonly ushort[,] _bank;
         private readonly Vram _vram;
 
+        //
+        //
+        // Consider changing 0xFFFF to its own register since we don't use any other mmuio.
+        //
+        // Instead of having properties for RAM, VRAM and Stack, we could instead
+        // have the CPU interally store the current value of the MemorySwitch (0xFFFF)
+        // register, switch to stack/vram/whatever, then switch back into normal mode.
+        // This *should* greatly simplify how accessing memory works.
+        //
+        //
+
         // Not the biggest fan of this.
         public ushort GetRam(int index)
         {
