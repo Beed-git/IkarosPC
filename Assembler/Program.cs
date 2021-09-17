@@ -11,30 +11,30 @@ namespace IkarosAssembler
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("Please enter at least 1 file name.");
+                Console.WriteLine("Please enter at least 1 bsm file.");
                 //return;
 
-                args = new[] { "test.asm" };
+                args = new[] { "test.bsm" };
             }
 
             foreach (string arg in args)
             {
-                //try
-                //{
+                try
+                {
                     var text = File.ReadAllLines(arg);
 
                     var parsed = AssemblyParser.Parse(text);
                     var result = Assembler.Assemble(parsed);
 
-                    var filename = arg + ".bsm";
+                    var filename = Path.ChangeExtension(arg, ".bin");
 
                     File.WriteAllBytes(filename, result);
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.ToString());
-                //    return;
-                //}
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return;
+                }
             }
 
             //var complexAsm = new string[]

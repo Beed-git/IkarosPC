@@ -230,7 +230,7 @@ namespace IkarosPC
                         _memory[address] = _memory[immediate];
                     }
                     break;
-                // Store a value in memory at an immediate value + an offset.
+                // Store a value in memory at an immediate value + a signed offset.
                 // 2 bytes.
                 // e.g. MOV X, (0x1234 + Y)
                 case 0x1C:
@@ -238,14 +238,14 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var offset = GetImmediate16();
+                        var offset = (short)GetImmediate16();
 
                         var address = (ushort)(offset + _registers[rY]);
 
                         _memory[address] = _registers[rX];
                     }
                     break;
-                // Stores a value in a register at an immediate value + an offset.
+                // Stores a value in a register at an immediate value + a signed offset.
                 // 2 bytes.
                 // e.g. MOV (0x1234 + $X), $Y
                 case 0x1D:
@@ -253,7 +253,7 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var offset = GetImmediate16();
+                        var offset = (short)GetImmediate16();
 
                         var address = (ushort)(offset + _registers[rX]);
 
@@ -818,14 +818,14 @@ namespace IkarosPC
                         _registers.PC = GetImmediate16();
                     }
                     break;
-                // Jump to an adress at a specified address plus an offset.
+                // Jump to an adress at a specified address plus a signed offset.
                 // 2 byte.
                 // e.g. JMP i16 + $X
                 case 0x72:
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var immediate = GetImmediate16();
+                        var immediate = (short)GetImmediate16();
 
                         var address = (ushort)(_registers[rX] + immediate);
 
