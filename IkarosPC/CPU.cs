@@ -17,10 +17,10 @@ namespace IkarosPC
 
         public bool Stopped => _stopped;
 
-        public CPU(Memory memory)
+        public CPU(Memory memory, Registers registers)
         {
+            _registers = registers;
             _memory = memory;
-            _registers = new Registers();
 
             _registers.Reset();
 
@@ -38,7 +38,7 @@ namespace IkarosPC
             if (_stopped)
                 return;
 
-            var opcode = _memory.Ram[_registers.PC];
+            var opcode = _memory.GetRam(_registers.PC);
             _registers.PC++;
 
             HandleOpcode(opcode);
@@ -47,7 +47,7 @@ namespace IkarosPC
         // Instruction helpers
         public ushort GetImmediate16()
         {
-            var immediate = _memory.Ram[_registers.PC];
+            var immediate = _memory.GetRam(_registers.PC);
             _registers.PC++;
 
             return immediate;

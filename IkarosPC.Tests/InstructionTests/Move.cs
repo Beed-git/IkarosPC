@@ -9,19 +9,25 @@ namespace IkarosPC.Tests.InstructionTests
 {
     class Move
     {
+        Registers _registers;
+
         Memory _memory;
         CPU _cpu;
 
         [SetUp]
         public void Setup()
         {
-            _memory = new Memory();
-            _cpu = new CPU(_memory);
+            _registers = new Registers();
+
+            _memory = new Memory(_registers);
+            _cpu = new CPU(_memory, _registers);
 
             _cpu.Reset();
 
+            // Check initial state of all registers and flags.
             SetupHelpers.CheckInitialCPUState(_cpu);
         }
+
         // 0x10
         [Test]
         public void MoveRegisterToRegister()
@@ -134,8 +140,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x12FF
             });
 
-            _memory.Ram[0x1000] = 0x1234;
-            _memory.Ram[0x2000] = 0xFEFE;
+            _memory.SetRam(0x1000, 0x1234);
+            _memory.SetRam(0x2000, 0xFEFE);
 
             _cpu.Step();
             _cpu.Step();
@@ -144,8 +150,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
             Assert.IsTrue(_cpu.Registers.C == 0);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0xFEFE);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0xFEFE);
 
             _cpu.Step();
 
@@ -153,8 +159,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
             Assert.IsTrue(_cpu.Registers.C == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0xFEFE);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0xFEFE);
 
             _cpu.Step();
 
@@ -162,8 +168,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
             Assert.IsTrue(_cpu.Registers.C == 0xFEFE);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0xFEFE);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0xFEFE);
 
             _cpu.Step();
 
@@ -171,8 +177,8 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0xFEFE);
             Assert.IsTrue(_cpu.Registers.C == 0xFEFE);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0xFEFE);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000)== 0xFEFE);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -194,32 +200,32 @@ namespace IkarosPC.Tests.InstructionTests
                 0x13FF
             });
 
-            _memory.Ram[0x1000] = 0xDDDD;
-            _memory.Ram[0x2000] = 0x8383;
+            _memory.SetRam(0x1000, 0xDDDD);
+            _memory.SetRam(0x2000, 0x8383);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 2);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xDDDD);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x8383);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xDDDD);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x8383);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0xDDDD);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xDDDD);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x8383);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xDDDD);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x8383);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x8383);
             Assert.IsTrue(_cpu.Registers.B == 0xDDDD);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xDDDD);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x8383);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xDDDD);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x8383);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -241,7 +247,7 @@ namespace IkarosPC.Tests.InstructionTests
                 0x14FF
             });
 
-            _memory.Ram[0x1000] = 0;
+            _memory.SetRam(0x1000, 0);
 
             _cpu.Step();
             _cpu.Step();
@@ -249,21 +255,21 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 5);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1000);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1000);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -289,8 +295,8 @@ namespace IkarosPC.Tests.InstructionTests
             });
 
             // Ensure memory starts at 0.
-            _memory.Ram[0x1000] = 0;
-            _memory.Ram[0x2000] = 0;
+            _memory.SetRam(0x1000, 0);
+            _memory.SetRam(0x2000, 0);
 
             _cpu.Step();
             _cpu.Step();
@@ -298,32 +304,32 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 8);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x4321);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x4321);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 10);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xFFFF);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x4321);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xFFFF);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x4321);
             
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -346,7 +352,7 @@ namespace IkarosPC.Tests.InstructionTests
                 0x16FF, 0xFEFE
             });
 
-            _memory.Ram[0x1000] = 0;
+            _memory.SetRam(0x1000, 0);
 
             _cpu.Step();
             _cpu.Step();
@@ -354,21 +360,21 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0xFFFF);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0xFFFF);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xFFFF);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xFFFF);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 8);
             Assert.IsTrue(_cpu.Registers.A == 0xFFFF);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x2000);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x2000);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -388,22 +394,22 @@ namespace IkarosPC.Tests.InstructionTests
                 0x17FF, 0x1234, 0x1000
             });
 
-            _memory.Ram[0x1000] = 0;
+            _memory.SetRam(0x1000, 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 3);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0xFEFE);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0xFEFE);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1111);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1111);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 9);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
         }
 
         // 0x18
@@ -423,8 +429,8 @@ namespace IkarosPC.Tests.InstructionTests
                 0x18FF
             });
 
-            _memory.Ram[0x1000] = 0x1010;
-            _memory.Ram[0x2000] = 0;
+            _memory.SetRam(0x1000, 0x1010);
+            _memory.SetRam(0x2000, 0);
 
             _cpu.Step(); 
             _cpu.Step();
@@ -432,24 +438,24 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1010);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1010);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 5);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1010);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x1010);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1010);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x1010);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
             Assert.IsTrue(_cpu.Registers.B == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1010);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1010);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1010);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1010);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -471,29 +477,29 @@ namespace IkarosPC.Tests.InstructionTests
                 0x19FF, 0x1234
             });
 
-            _memory.Ram[0x1000] = 0x1234;
-            _memory.Ram[0x2000] = 0;
+            _memory.SetRam(0x1000, 0x1234);
+            _memory.SetRam(0x2000, 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 2);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x1234);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x1000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x1234);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -515,29 +521,29 @@ namespace IkarosPC.Tests.InstructionTests
                 0x1AFF, 0x1234
             });
 
-            _memory.Ram[0x1000] = 0x1234;
-            _memory.Ram[0x2000] = 0;
+            _memory.SetRam(0x1000, 0x1234);
+            _memory.SetRam(0x2000, 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 2);
             Assert.IsTrue(_cpu.Registers.A == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 4);
             Assert.IsTrue(_cpu.Registers.A == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x1234);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
             Assert.IsTrue(_cpu.Registers.A == 0x2000);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x1234);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -555,20 +561,20 @@ namespace IkarosPC.Tests.InstructionTests
                 0x1B00, 0x1000, 0x1000
             });
 
-            _memory.Ram[0x1000] = 0x9999;
-            _memory.Ram[0x2000] = 0;
+            _memory.SetRam(0x1000, 0x9999);
+            _memory.SetRam(0x2000, 0);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 3);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x9999);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x9999);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x9999);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x9999);
 
             _cpu.Step();
 
             Assert.IsTrue(_cpu.Registers.PC == 6);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x9999);
-            Assert.IsTrue(_memory.Ram[0x2000] == 0x9999);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x9999);
+            Assert.IsTrue(_memory.GetRam(0x2000) == 0x9999);
         }
 
         // 0x1C
@@ -591,9 +597,9 @@ namespace IkarosPC.Tests.InstructionTests
                 0x1CFF, 0x1234
             });
 
-            _memory.Ram[0x1000] = 0;
-            _memory.Ram[0x1001] = 0;
-            _memory.Ram[0x1002] = 0;
+            _memory.SetRam(0x1000, 0);
+            _memory.SetRam(0x1001, 0);
+            _memory.SetRam(0x1002, 0);
 
             _cpu.Step();
             _cpu.Step();
@@ -603,9 +609,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x0999);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0);
 
             _cpu.Step();
 
@@ -613,9 +619,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x0999);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x0999);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x0999);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0);
 
             _cpu.Step();
 
@@ -623,9 +629,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x0999);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x0999);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0x0999);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x0999);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0x0999);
 
             _cpu.Step();
 
@@ -633,9 +639,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x0999);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0x0999);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x0002);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0x0999);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);
@@ -659,9 +665,9 @@ namespace IkarosPC.Tests.InstructionTests
                 0x1DFF, 0x1234
             });
 
-            _memory.Ram[0x1000] = 0x1234;
-            _memory.Ram[0x1001] = 0x1111;
-            _memory.Ram[0x1002] = 0x2222;
+            _memory.SetRam(0x1000, 0x1234);
+            _memory.SetRam(0x1001, 0x1111);
+            _memory.SetRam(0x1002, 0x2222);
 
             _cpu.Step();
             _cpu.Step();
@@ -671,9 +677,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1234);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x1111);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0x2222);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x1111);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0x2222);
 
             _cpu.Step();
 
@@ -681,9 +687,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x1111);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x1111);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0x2222);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x1111);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0x2222);
 
             _cpu.Step();
 
@@ -691,9 +697,9 @@ namespace IkarosPC.Tests.InstructionTests
             Assert.IsTrue(_cpu.Registers.A == 0x2222);
             Assert.IsTrue(_cpu.Registers.B == 0x0001);
             Assert.IsTrue(_cpu.Registers.C == 0x0002);
-            Assert.IsTrue(_memory.Ram[0x1000] == 0x1234);
-            Assert.IsTrue(_memory.Ram[0x1001] == 0x1111);
-            Assert.IsTrue(_memory.Ram[0x1002] == 0x2222);
+            Assert.IsTrue(_memory.GetRam(0x1000) == 0x1234);
+            Assert.IsTrue(_memory.GetRam(0x1001) == 0x1111);
+            Assert.IsTrue(_memory.GetRam(0x1002) == 0x2222);
 
             // Test invalid register.
             Assert.Throws<IndexOutOfRangeException>(_cpu.Step);

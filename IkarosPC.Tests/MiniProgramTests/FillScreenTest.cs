@@ -11,14 +11,18 @@ namespace IkarosPC.Tests.MiniProgramTests
 {
     class FillScreenTest
     {
+        Registers _registers;
+
         Memory _memory;
         CPU _cpu;
 
         [SetUp]
         public void Setup()
         {
-            _memory = new Memory();
-            _cpu = new CPU(_memory);
+            _registers = new Registers();
+
+            _memory = new Memory(_registers);
+            _cpu = new CPU(_memory, _registers);
         }
 
         [Test]
@@ -70,7 +74,7 @@ namespace IkarosPC.Tests.MiniProgramTests
 
                 if (timer.ElapsedMilliseconds > (1 / 60))
                 {
-                    if (_memory.Ram[_cpu.Registers.PC - 1] == 0x0100 && _memory.Ram[_cpu.Registers.PC] == 0)
+                    if (_memory.GetRam(_cpu.Registers.PC - 1) == 0x0100 && _memory.GetRam(_cpu.Registers.PC) == 0)
                         running = false;
 
                     display.Handle(window);

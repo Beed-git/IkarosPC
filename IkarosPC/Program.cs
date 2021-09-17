@@ -9,11 +9,14 @@ namespace IkarosPC
     {
         static CPU _cpu;
         static Memory _memory;
+        static Registers _registers;
 
         static void Main(string[] args)
         {
-            _memory = new Memory();
-            _cpu = new CPU(_memory);
+            _registers = new Registers();
+
+            _memory = new Memory(_registers);
+            _cpu = new CPU(_memory, _registers);
 
             var display = new Display(_memory.Vram);
 

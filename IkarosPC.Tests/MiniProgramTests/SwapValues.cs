@@ -9,17 +9,22 @@ namespace IkarosPC.Tests.MiniProgramTests
 {
     class SwapValues
     {
-        private CPU _cpu;
-        private Memory _memory;
+        Registers _registers;
+
+        Memory _memory;
+        CPU _cpu;
 
         [SetUp]
         public void Setup()
         {
-            _memory = new Memory();
-            _cpu = new CPU(_memory);
+            _registers = new Registers();
+
+            _memory = new Memory(_registers);
+            _cpu = new CPU(_memory, _registers);
 
             _cpu.Reset();
 
+            // Check initial state of all registers and flags.
             SetupHelpers.CheckInitialCPUState(_cpu);
         }
 

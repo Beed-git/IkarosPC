@@ -9,14 +9,18 @@ namespace IkarosPC.Tests.MiniProgramTests
 {
     class BSMCompilation
     {
+        Registers _registers;
+
         Memory _memory;
         CPU _cpu;
 
         [SetUp]
         public void Setup()
         {
-            _memory = new Memory();
-            _cpu = new CPU(_memory);
+            _registers = new Registers();
+
+            _memory = new Memory(_registers);
+            _cpu = new CPU(_memory, _registers);
 
             _cpu.Reset();
 
