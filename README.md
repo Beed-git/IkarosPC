@@ -5,12 +5,13 @@ IkarosPC is a custom 16-bit computer I am creating in C# which will eventually t
 Any trailing zeros in instructions after the first 2 digits such as MOV i16, (i16) can be assumed to be ignored.
 
 ### Registers
+- $A, $B, $C, $D, $E, $X, $Y, $Z = general purpose registers.
+- $ACC = Accumulator.
 - $PC = Program counter.
 - $SP = Stack pointer.
 - $FP = Frame pointer. (stack)
-- $ACC = Accumulator.
 - $FLAG = Flags.
-- $A, $B, $C, $D, $E, $X, $Y, $Z = general purpose registers.
+- $MBC = Memory bank controller.
 
 ### Instruction Set
 insn, source, destination
@@ -28,6 +29,8 @@ insn, source, destination
 	- 0x05N0 - 1 byte - CALL $X
 	- 0x0600 - 2 byte - CALL i16
 	- 0x0700 - 1 byte - RET
+	- 0x0800 - 1 byte - MOVGS $X, $Y
+	- 0x0900 - 1 byte - MOVSG $X, $Y
 #### Move
 	- 0x10NN - 1 byte - MOV $X, $Y
 	- 0x11N0 - 2 byte - MOV i16, $Y
