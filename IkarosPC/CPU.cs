@@ -8,8 +8,8 @@ namespace IkarosPC
 {
     public partial class CPU
     {
-        Memory _memory;
-        Registers _registers;
+        private readonly Memory _memory;
+        private readonly Registers _registers;
 
         private bool _stopped;
 

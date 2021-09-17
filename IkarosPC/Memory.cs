@@ -9,12 +9,12 @@ namespace IkarosPC
     public class Memory
     {
         // Cpus registers.
-        private Registers _registers;
+        private readonly Registers _registers;
 
-        private ushort[] _memory;
-        private ushort[] _stack;
-        private ushort[,] _bank;
-        private Vram _vram;
+        private readonly ushort[] _memory;
+        private readonly ushort[] _stack;
+        private readonly ushort[,] _bank;
+        private readonly Vram _vram;
 
         // Not the biggest fan of this.
         public ushort GetRam(int index)
@@ -26,7 +26,7 @@ namespace IkarosPC
                     return _memory[index];
 
                 var address = index - 0xB000;
-                var mbc = _registers.MBC - 1;
+                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
 
                 return _bank[mbc, address];
             }
@@ -46,7 +46,7 @@ namespace IkarosPC
                 }
 
                 var address = index - 0xB000;
-                var mbc = _registers.MBC - 1;
+                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
 
                 _bank[mbc, address] = value;
                 return;
@@ -91,7 +91,7 @@ namespace IkarosPC
                         return _memory[i];
 
                     var address = i - 0xB000;
-                    var mbc = _registers.MBC - 1;
+                    var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
 
                     return _bank[mbc, address];
                 }
@@ -127,7 +127,7 @@ namespace IkarosPC
                     }
 
                     var address = i - 0xB000;
-                    var mbc = _registers.MBC - 1;
+                    var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
 
                     _bank[mbc, address] = value;
                     return;
