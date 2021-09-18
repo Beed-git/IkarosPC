@@ -7,21 +7,22 @@ namespace IkarosPC
 {
     class Program
     {
-        static CPU _cpu;
         static Memory _memory;
         static Registers _registers;
+
+        static CPU _cpu;
 
         static void Main(string[] args)
         {
             _registers = new Registers();
 
             _memory = new Memory(_registers);
-            _cpu = new CPU(_memory, _registers);
+            _cpu = new CPU(_registers, _memory);
 
-            var display = new Display(_memory.Vram);
+            var display = new Display(_registers, _memory);
 
-            var screenX = (uint)_memory.Vram.ScreenX;
-            var screenY = (uint)_memory.Vram.ScreenY;
+            var screenX = _memory.ScreenX;
+            var screenY = _memory.ScreenY;
 
             var window = new RenderWindow(new VideoMode(screenX * 4, screenY * 4), "Ikaros");
 

@@ -9,15 +9,17 @@ namespace IkarosPC
 {
     public class Display
     {
-        private Vram _vram;
+        private readonly Registers _registers;
+        private readonly Memory _memory;
 
         private Image _image;
         private Texture _texture;
         private Sprite _sprite;
 
-        public Display(Vram vram)
+        public Display(Registers registers, Memory memory)
         {
-            _vram = vram;
+            _registers = registers;
+            _memory = memory;
         }
 
         public void Handle(RenderWindow window)
@@ -27,9 +29,9 @@ namespace IkarosPC
 
             window.Clear(Color.Black);
 
-            _image = new Image((uint)_vram.ScreenX, (uint)_vram.ScreenY, ConvertScreenToSFML());
+            _image = new Image(_memory.ScreenX, _memory.ScreenY, ConvertScreenToSFML());
 
-            _texture = new Texture(_image, new IntRect(0, 0, _vram.ScreenX, _vram.ScreenY));
+            _texture = new Texture(_image, new IntRect(0, 0, (int)_memory.ScreenX, (int)_memory.ScreenY));
 
             _sprite = new Sprite(_texture);
 
@@ -40,12 +42,16 @@ namespace IkarosPC
 
         public byte[] ConvertScreenToSFML()
         {
-            var screen = _vram.GetScreen();
-            var pixels = new byte[_vram.ScreenX * _vram.ScreenY * 4];
+            var saveRSC = _registers.RSC;
+            _registers.RSC = 3;
 
-            for (int i = 0; i < screen.Length; i++)
+            var screenSize = _memory.ScreenX * _memory.ScreenY;
+
+            var pixels = new byte[_memory.ScreenX * _memory.ScreenY * 4];
+
+            for (ushort i = 0; i < screenSize; i++)
             {
-                var pixel = screen[i];
+                var pixel = _memory[i];
 
                 var red = (byte)((pixel & 0xF000) >> 12);
                 var green = (byte)((pixel & 0x0F00) >> 8);
@@ -56,6 +62,8 @@ namespace IkarosPC
                 pixels[i * 4 + 2] = (byte)(blue * (255 / 0xF));
                 pixels[i * 4 + 3] = 255;
             }
+
+            _registers.RSC = saveRSC;
 
             return pixels;
         }

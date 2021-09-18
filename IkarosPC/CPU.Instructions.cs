@@ -297,10 +297,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] + _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result > ushort.MaxValue;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result > ushort.MaxValue;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -317,10 +317,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] + immediate;
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result > ushort.MaxValue;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result > ushort.MaxValue;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)(_registers[rX] + immediate);
                     }
@@ -336,10 +336,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] - _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result < 0;
-                        Registers.Negative = true;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result < 0;
+                        _registers.Negative = true;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -356,10 +356,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] - immediate;
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result < 0;
-                        Registers.Negative = true;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result < 0;
+                        _registers.Negative = true;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -376,10 +376,10 @@ namespace IkarosPC
 
                         var result = immediate - _registers[rX];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result < 0;
-                        Registers.Negative = true;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result < 0;
+                        _registers.Negative = true;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -394,10 +394,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] + 1;
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result > ushort.MaxValue;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result > ushort.MaxValue;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers[rX] = (ushort)result;
                     }
@@ -412,10 +412,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] - 1;
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result < 0;
-                        Registers.Negative = true;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result < 0;
+                        _registers.Negative = true;
+                        _registers.Signed = false;
 
                         _registers[rX] = (ushort)result;
                     }
@@ -436,10 +436,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] * _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = result > ushort.MaxValue;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = result > ushort.MaxValue;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -464,10 +464,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] & _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -482,10 +482,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] & GetImmediate16();
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -501,10 +501,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] | _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -519,10 +519,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] | GetImmediate16();
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -538,10 +538,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] ^ _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -556,10 +556,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] ^ GetImmediate16();
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -574,10 +574,10 @@ namespace IkarosPC
 
                         var result = ~_registers[rX];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -593,10 +593,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] << _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = (result & 0x10000) > 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = (result & 0x10000) > 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -611,10 +611,10 @@ namespace IkarosPC
 
                         var result = _registers[rX] << GetImmediate16();
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = (result & 0x10000) > 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = (result & 0x10000) > 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -628,13 +628,13 @@ namespace IkarosPC
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
                         byte rY = (byte)(opcode & 0x000F);
 
-                        var x = _registers[rX] + (Registers.Carry ? 0x10000 : 0);
+                        var x = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
                         var result = x >> _registers[rY];
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -647,13 +647,13 @@ namespace IkarosPC
                     {
                         byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                        var x = _registers[rX] + (Registers.Carry ? 0x10000 : 0);
+                        var x = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
                         var result = x >> GetImmediate16() ;
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = false;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = false;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -734,10 +734,10 @@ namespace IkarosPC
 
                         var result = (number << amount) | (number >> (0x11 - amount));
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = (result & 0x10000) > 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = (result & 0x10000) > 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -755,10 +755,10 @@ namespace IkarosPC
 
                         var result = (number << amount) | (number >> (0x11 - amount));
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Carry = (result & 0x10000) > 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Carry = (result & 0x10000) > 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         _registers.Accumulator = (ushort)result;
                     }
@@ -777,14 +777,14 @@ namespace IkarosPC
 
                         var result = (number >> amount) | (number << (0x11 - amount));
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         // Convaluted way of setting carry bit. Refactor this in the future.
                         if (amount != 0)
                         {
-                            Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                            _registers.Carry = (number >> (amount - 1) & 0x1) > 0;
                         }
 
                         _registers.Accumulator = (ushort)result;
@@ -803,14 +803,14 @@ namespace IkarosPC
 
                         var result = (number >> amount) | (number << (0x11 - amount));
 
-                        Registers.Zero = ((ushort)result) == 0;
-                        Registers.Negative = false;
-                        Registers.Signed = false;
+                        _registers.Zero = ((ushort)result) == 0;
+                        _registers.Negative = false;
+                        _registers.Signed = false;
 
                         // Convaluted way of setting carry bit. Refactor this in the future.
                         if (amount != 0)
                         {
-                            Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                            _registers.Carry = (number >> (amount - 1) & 0x1) > 0;
                         }
 
                         _registers.Accumulator = (ushort)result;

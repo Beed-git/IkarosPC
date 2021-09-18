@@ -13,11 +13,9 @@ namespace IkarosPC
 
         private bool _stopped;
 
-        public Registers Registers => _registers;
-
         public bool Stopped => _stopped;
 
-        public CPU(Memory memory, Registers registers)
+        public CPU(Registers registers, Memory memory)
         {
             _registers = registers;
             _memory = memory;
