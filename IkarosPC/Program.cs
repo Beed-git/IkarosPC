@@ -12,6 +12,8 @@ namespace IkarosPC
 
         static CPU _cpu;
 
+        static GPU _gpu;
+
         static void Main(string[] args)
         {
             _registers = new Registers();
@@ -19,10 +21,12 @@ namespace IkarosPC
             _memory = new Memory(_registers);
             _cpu = new CPU(_registers, _memory);
 
-            var display = new Display(_registers, _memory);
+            _gpu = new GPU(_registers, _memory);
 
             var screenX = _memory.ScreenX;
             var screenY = _memory.ScreenY;
+
+            var display = new Display(_gpu, screenX, screenY);
 
             var window = new RenderWindow(new VideoMode(screenX * 4, screenY * 4), "Ikaros");
 

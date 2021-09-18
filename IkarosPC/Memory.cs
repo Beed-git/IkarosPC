@@ -18,8 +18,8 @@ namespace IkarosPC
         private readonly ushort[] _vram;
         private readonly ushort[] _display;
 
-        private readonly uint screenX = 160;
-        private readonly uint screenY = 144;
+        private readonly uint screenX = 240;
+        private readonly uint screenY = 216;
 
         public uint ScreenX => screenX;
         public uint ScreenY => screenY;
@@ -39,19 +39,20 @@ namespace IkarosPC
             // 255 banks of 0x4000 memory for a total of ~8.39mb of switchable storage. (Including 0th bank - none.)
             _bank = new ushort[0xFF, 0x4000];
 
-            // Vram has a 160x144 pixel screen, with 1 16-bit value per pixel. 
+            // Vram has a 240x216 pixel screen, with 1 16-bit value per pixel. 
             // Each 16-bit value is split into RRRRGGGGBBBB----
-            // Every 1/60 seconds the display is rebuilt from the tilesets and sprites in vram.
+            // Every 1/60 seconds the display is rebuilt from the tilesets and sprites in vram. 
+            // Any information stored in _display is then put on top of the tiles and sprites.
             // Display is 23040 ushorts wide.
             _vram = new ushort[0x10000];
             _display = new ushort[screenX * screenY];
 
             // TEMP: Fill display with random values.
-            var random = new Random();
-
             for (ushort i = 0; i < _display.Length; i++)
             {
-                _display[i] = (ushort)random.Next(0, ushort.MaxValue);
+                if ((i % screenX) % 32 < 16)
+                    if ((i / screenX % screenY) % 32 < 16)
+                        _display[i] = ushort.MaxValue; 
             }
         }
 

@@ -9,17 +9,21 @@ namespace IkarosPC
 {
     public class Display
     {
-        private readonly Registers _registers;
-        private readonly Memory _memory;
+        private readonly GPU _gpu;
+
+        private readonly uint _screenX;
+        private readonly uint _screenY;
 
         private Image _image;
         private Texture _texture;
         private Sprite _sprite;
 
-        public Display(Registers registers, Memory memory)
+        public Display(GPU gpu, uint screenX, uint screenY)
         {
-            _registers = registers;
-            _memory = memory;
+            _gpu = gpu;
+
+            _screenX = screenX;
+            _screenY = screenY;
         }
 
         public void Handle(RenderWindow window)
@@ -29,9 +33,9 @@ namespace IkarosPC
 
             window.Clear(Color.Black);
 
-            _image = new Image(_memory.ScreenX, _memory.ScreenY, ConvertScreenToSFML());
+            _image = new Image(_screenX, _screenY, ConvertScreenToSFML());
 
-            _texture = new Texture(_image, new IntRect(0, 0, (int)_memory.ScreenX, (int)_memory.ScreenY));
+            _texture = new Texture(_image, new IntRect(0, 0, (int)_screenX, (int)_screenY));
 
             _sprite = new Sprite(_texture);
 
@@ -42,16 +46,13 @@ namespace IkarosPC
 
         public byte[] ConvertScreenToSFML()
         {
-            var saveRSC = _registers.RSC;
-            _registers.RSC = 3;
+            var screen = _gpu.BuildDisplay();
 
-            var screenSize = _memory.ScreenX * _memory.ScreenY;
+            var pixels = new byte[_screenX * _screenY * 4];
 
-            var pixels = new byte[_memory.ScreenX * _memory.ScreenY * 4];
-
-            for (ushort i = 0; i < screenSize; i++)
+            for (ushort i = 0; i < screen.Length; i++)
             {
-                var pixel = _memory[i];
+                var pixel = screen[i];
 
                 var red = (byte)((pixel & 0xF000) >> 12);
                 var green = (byte)((pixel & 0x0F00) >> 8);
@@ -62,8 +63,6 @@ namespace IkarosPC
                 pixels[i * 4 + 2] = (byte)(blue * (255 / 0xF));
                 pixels[i * 4 + 3] = 255;
             }
-
-            _registers.RSC = saveRSC;
 
             return pixels;
         }
