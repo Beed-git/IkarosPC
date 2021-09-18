@@ -29,7 +29,7 @@ namespace IkarosPC
 
             // Sprites are represented in two places: 
             // First is the SpriteObjectInformation which stores info such as
-            // x pos, y pos, x scale, y scale, options flags (described below), and the 
+            // (x pos, y pos), (x scale, y scale), (options) flags (described below), and the 
             // pointer to the sprite graphics.
             // Second is in normal VRAM space, which starts with a word telling 
             // the size of the sprite, then two bytes for the x and y size.
@@ -45,9 +45,21 @@ namespace IkarosPC
             // VRAM map:
             // 0 -> 0x100        - ushorts corresponding to the tile number for the first tilemap.
             // 0x100 -> 0x200 is reserved.
-            // 0x200 -> 0x300   - ushorts corresponding to the tile number for the second tilemap.
+            // 0x200 -> 0x300    - ushorts corresponding to the tile number for the second tilemap.
             // 0x300 -> 0x400 is reserved.
+            // 0x400 -> 0x500    - ushorts corresponding to the tile number for the foreground tilemap.
+            // 0x500 -> 0x600 is reserved.
+            // 0x600 -> 0x1000   - ushorts corresponding to the sprite object info.
 
+            // 0x1000 -> 0x8000  - Reserved for 16x16 tiles for a total of 70 tiles loaded at once.
+            // 0x8000 -> 0xF000  - Reserved for sprites.
+            // (0x8000 should always be the pointer to the next sprite.)
+
+            // 0xF000 - 0xFFFF - Reserved for vram registers.
+            // 0xF000 - Global Tilemap Offset (first byte = x offset, second byte = y offset.)
+            // 0xF001 - First tilemap offset
+            // 0xF002 - Second tilemap offset
+            // 0xF003 - Foreground tilemap offset
             var saveRSC = _registers.RSC;
 
             var screen = new ushort[_memory.ScreenX * _memory.ScreenY];
