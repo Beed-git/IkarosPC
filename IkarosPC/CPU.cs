@@ -30,7 +30,7 @@ namespace IkarosPC
         public void Reset()
         {
             _registers.Reset();
-            _memory.Reset();
+            // _memory.Reset();
         }
 
         public void Step()
@@ -38,8 +38,7 @@ namespace IkarosPC
             if (_stopped)
                 return;
 
-            var opcode = _memory.GetRam(_registers.PC);
-            _registers.PC++;
+            var opcode = GetImmediate16();
 
             HandleOpcode(opcode);
         }
@@ -47,26 +46,49 @@ namespace IkarosPC
         // Instruction helpers
         public ushort GetImmediate16()
         {
-            var immediate = _memory.GetRam(_registers.PC);
+            // Switch to memory access mode and temp save the value.
+            var saveRSC = _registers.RSC;
+            _registers.RSC = 0;
+
+            var immediate = _memory[_registers.PC];
             _registers.PC++;
+
+            // Restore RSC.
+            _registers.RSC = saveRSC;
 
             return immediate;
         }
 
         public void Push(ushort value)
         {
-            _memory.Stack[_registers.SP] = value;
+            // Switch to stack access mode and temp save the value.
+            var saveRSC = _registers.RSC;
+            _registers.RSC = 1;
+
+            _memory[_registers.SP] = value;
             _registers.SP--;
 
             _registers.StackFrameSize++;
+
+            // Restore RSC.
+            _registers.RSC = saveRSC;
         }
 
         public ushort Pop()
         {
+            // Switch to stack access mode and temp save the value.
+            var saveRSC = _registers.RSC;
+            _registers.RSC = 1;
+
             _registers.StackFrameSize--;
 
             _registers.SP++;
-            return _memory.Stack[_registers.SP];
+            var stack = _memory[_registers.SP];
+
+            // Restore RSC.
+            _registers.RSC = saveRSC;
+
+            return stack;
         }
 
         public void SaveStackState()

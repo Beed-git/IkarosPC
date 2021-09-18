@@ -14,60 +14,8 @@ namespace IkarosPC
         private readonly ushort[] _memory;
         private readonly ushort[] _stack;
         private readonly ushort[,] _bank;
+
         private readonly Vram _vram;
-
-        //
-        //
-        // Consider changing 0xFFFF to its own register since we don't use any other mmuio.
-        //
-        // Instead of having properties for RAM, VRAM and Stack, we could instead
-        // have the CPU interally store the current value of the MemorySwitch (0xFFFF)
-        // register, switch to stack/vram/whatever, then switch back into normal mode.
-        // This *should* greatly simplify how accessing memory works.
-        //
-        //
-
-        // Not the biggest fan of this.
-        public ushort GetRam(int index)
-        {
-            // Return banked memory.
-            if (index >= 0xB000 && index < 0xF000)
-            {
-                if (_registers.MBC == 0)
-                    return _memory[index];
-
-                var address = index - 0xB000;
-                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
-
-                return _bank[mbc, address];
-            }
-
-            return _memory[index];
-        }
-
-        public void SetRam(ushort value, int index)
-        {
-            // Set banked memory.
-            if (index >= 0xB000 && index < 0xF000)
-            {
-                if (_registers.MBC == 0)
-                {
-                    _memory[index] = value;
-                    return;
-                }
-
-                var address = index - 0xB000;
-                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
-
-                _bank[mbc, address] = value;
-                return;
-            }
-
-            _memory[index] = value;
-        }
-
-        public ushort[] Stack => _stack;
-        public Vram Vram => _vram;
 
         /// <summary>
         /// ~65kb regular memory
@@ -80,76 +28,82 @@ namespace IkarosPC
 
             _memory = new ushort[0x10000];
             _stack = new ushort[0xC000];
+            
             // 255 banks of 0x4000 memory for a total of ~8.39mb of switchable storage. (Including 0th bank - none.)
             _bank = new ushort[0xFF, 0x4000];
-
+            
             _vram = new Vram();
-        }
-
-        public void Reset()
-        {
-            _memory[0xFFFF] = 0;
         }
 
         public ushort this[ushort i]
         {
             get
             {
-                // Return banked memory.
-                if (i >= 0xB000 && i < 0xF000)
+                switch (_registers.RSC)
                 {
-                    if (_registers.MBC == 0)
-                        return _memory[i];
+                    case 0:
+                        {
+                            // Return banked memory.
+                            if (i >= 0xB000 && i < 0xF000)
+                            {
+                                if (_registers.MBC == 0)
+                                    return _memory[i];
 
-                    var address = i - 0xB000;
-                    var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
+                                var address = i - 0xB000;
+                                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
 
-                    return _bank[mbc, address];
-                }
+                                return _bank[mbc, address];
+                            }
 
-                // 0xFFFF will always return from the 0xFFFF register (memory control switch, will change between 'cartridges', regular ram, vram, and stack ram.
-                if (i == 0xFFFF)
-                {
-                    return _memory[i];
-                }
-
-                switch (_memory[0xFFFF])
-                {
-                    case 0x0: return _memory[i];
-                    case 0x1: return _stack[i];
-                    case 0x2: return _vram[i];
-                    default: throw new ArgumentOutOfRangeException("Memory at this address does not exist.");
+                            return _memory[i];
+                        }
+                    case 1:
+                        {
+                            return _stack[i];
+                        }
+                    case 2:
+                        {
+                            return _vram[i];
+                        }
+                    default: throw new ArgumentOutOfRangeException($"Attempted to access invalid memory at ${ _registers.MBC }.");
                 }
             }
             set
             {
-                if (i == 0xFFFF)
+                switch (_registers.RSC)
                 {
-                    _memory[i] = value;
-                }
+                    case 0:
+                        {
+                            // Set banked memory.
+                            if (i >= 0xB000 && i < 0xF000)
+                            {
+                                if (_registers.MBC == 0)
+                                {
+                                    _memory[i] = value;
+                                    return;
+                                }
 
-                // Set banked memory.
-                if (i >= 0xB000 && i < 0xF000)
-                {
-                    if (_registers.MBC == 0)
-                    {
-                        _memory[i] = value;
+                                var address = i - 0xB000;
+                                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
+
+                                _bank[mbc, address] = value;
+                                return;
+                            }
+
+                            _memory[i] = value;
+                        }
                         return;
-                    }
-
-                    var address = i - 0xB000;
-                    var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
-
-                    _bank[mbc, address] = value;
-                    return;
-                }
-
-                switch (_memory[0xFFFF])
-                {
-                    case 0x0: _memory[i] = value; break;
-                    case 0x1: _stack[i] = value; break;
-                    case 0x2: _vram[i] = value; break;
-                    default: throw new ArgumentOutOfRangeException("Memory at this address does not exist.");
+                    case 1:
+                        {
+                            _stack[i] = value;
+                        }
+                        return;
+                    case 2:
+                        {
+                            _vram[i] = value;
+                        }
+                        return; 
+                    default: throw new ArgumentOutOfRangeException($"Attempted to access invalid memory at ${ _registers.MBC }.");
                 }
             }
         }
