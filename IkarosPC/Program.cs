@@ -23,6 +23,38 @@ namespace IkarosPC
 
             _gpu = new GPU(_registers, _memory);
 
+            // Debug.
+            _registers.RSC = 2;
+
+            _memory[0] = 1;
+            _memory[1] = 1;
+            _memory[2] = 1;
+            _memory[3] = 1;
+            _memory[32] = 1;
+            _memory[33] = 2;
+            _memory[35] = 1;
+
+            // X offset
+            // -2
+            _memory[0xFF00] = 0xFFFE;
+            // Y offset
+            _memory[0xFF01] = 4;
+
+            ushort tile = 0x2000;
+
+            for (int i = 0; i < 16; i++)
+                for (int y = 0; y < 16; y++)
+                {
+                    _memory[(ushort)(tile + i + y * 16)] = (ushort)(0xF00F + i * 0x100 + y * 0x10);
+                    _memory[(ushort)(tile + 0x100 + i + y * 16)] = (ushort)(i % 2 > 0 && y % 2 == 1 ||
+                                                                            i % 2 == 0 && y % 2 == 0 
+                                                                            ? 0xF25F : 0x52FF);
+                }
+
+            _registers.RSC = 0;
+
+            // END DEBUG CODE
+
             var screenX = _memory.ScreenX;
             var screenY = _memory.ScreenY;
 
@@ -54,10 +86,9 @@ namespace IkarosPC
 
             while (running)
             {
-
                 _cpu.Step();
 
-                if (timer.ElapsedMilliseconds > (1 / 60))
+                if (timer.ElapsedMilliseconds > 1 / 60 * 1000)
                 {
                     window.SetView(view);
                     display.Handle(window);
