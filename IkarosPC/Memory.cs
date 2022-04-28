@@ -1,161 +1,156 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IkarosPC
+namespace IkarosPC;
+
+public class Memory
 {
-    public class Memory
+    public const int STACK_SIZE = 0x4000;
+
+    // Cpus registers.
+    private readonly Registers _registers;
+
+    private readonly ushort[] _memory;
+    private readonly ushort[] _stack;
+    private readonly ushort[,] _bank;
+
+    /// <summary>
+    /// ~65kb regular memory
+    /// ~49kb stack memory
+    /// ~8.39mb banked memory
+    /// </summary>
+    public Memory(Registers registers)
     {
-        // Cpus registers.
-        private readonly Registers _registers;
+        _registers = registers;
 
-        private readonly ushort[] _memory;
-        private readonly ushort[] _stack;
-        private readonly ushort[,] _bank;
+        _memory = new ushort[0x10000];
+        _stack = new ushort[STACK_SIZE];
+        
+        // 255 banks of 0x4000 memory for a total of ~8.39mb of switchable storage. (Including 0th bank - none.)
+        _bank = new ushort[0xFF, 0x4000];
+    }
 
-        private readonly ushort[] _vram;
-        private readonly ushort[] _display;
-
-        private readonly uint screenX = 240;
-        private readonly uint screenY = 216;
-
-        public uint ScreenX => screenX;
-        public uint ScreenY => screenY;
-
-        /// <summary>
-        /// ~65kb regular memory
-        /// ~49kb stack memory
-        /// ~8.39mb banked memory
-        /// </summary>
-        public Memory(Registers registers)
+    public ushort this[ushort i]
+    {
+        get
         {
-            _registers = registers;
-
-            _memory = new ushort[0x10000];
-            _stack = new ushort[0xC000];
-            
-            // 255 banks of 0x4000 memory for a total of ~8.39mb of switchable storage. (Including 0th bank - none.)
-            _bank = new ushort[0xFF, 0x4000];
-
-            // Vram has a 240x216 pixel screen, with 1 16-bit value per pixel. 
-            // Each 16-bit value is split into RRRRGGGGBBBB----
-            // Every 1/60 seconds the display is rebuilt from the tilesets and sprites in vram. 
-            // Any information stored in _display is then put on top of the tiles and sprites.
-            // Display is 23040 ushorts wide.
-            _vram = new ushort[0x10000];
-            _display = new ushort[screenX * screenY];
-
-            // TEMP: Fill display with random values.
-            for (ushort i = 0; i < _display.Length; i++)
+            // Return banked memory.
+            if (i >= 0xC000)
             {
-                if ((i % screenX) % 32 < 16)
-                    if ((i / screenX % screenY) % 32 < 16)
-                        _display[i] = ushort.MaxValue; 
+                if (_registers.MBC == 0)
+                    return _memory[i];
+
+                var address = i - 0xC000;
+                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
+
+                return _bank[mbc, address];
             }
+            else return _memory[i];
         }
-
-        public ushort this[ushort i]
+        set
         {
-            get
+            // Set banked memory.
+            if (i >= 0xC000)
             {
-                switch (_registers.RSC)
+                if (_registers.MBC == 0)
                 {
-                    case 0:
-                        {
-                            // Return banked memory.
-                            if (i >= 0xB000 && i < 0xF000)
-                            {
-                                if (_registers.MBC == 0)
-                                    return _memory[i];
-
-                                var address = i - 0xB000;
-                                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
-
-                                return _bank[mbc, address];
-                            }
-
-                            return _memory[i];
-                        }
-                    case 1:
-                        {
-                            return _stack[i];
-                        }
-                    case 2:
-                        {
-                            return _vram[i];
-                        }
-                    case 3:
-                        {
-                            return _display[i];
-                        }
-                    default: throw new ArgumentOutOfRangeException($"Attempted to access invalid memory at ${ _registers.MBC }.");
+                    _memory[i] = value;
+                    return;
                 }
+
+                var address = i - 0xB000;
+                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
+
+                _bank[mbc, address] = value;
+                return;
             }
-            set
-            {
-                switch (_registers.RSC)
-                {
-                    case 0:
-                        {
-                            // Set banked memory.
-                            if (i >= 0xB000 && i < 0xF000)
-                            {
-                                if (_registers.MBC == 0)
-                                {
-                                    _memory[i] = value;
-                                    return;
-                                }
-
-                                var address = i - 0xB000;
-                                var mbc = (_registers.MBC - 1) % _bank.GetLength(0);
-
-                                _bank[mbc, address] = value;
-                                return;
-                            }
-
-                            _memory[i] = value;
-                        }
-                        return;
-                    case 1:
-                        {
-                            _stack[i] = value;
-                        }
-                        return;
-                    case 2:
-                        {
-                            _vram[i] = value;
-                        }
-                        return; 
-                    case 3:
-                        {
-                            _display[i] = value;
-                        }
-                        return; 
-                    default: throw new ArgumentOutOfRangeException($"Attempted to access invalid memory at ${ _registers.MBC }.");
-                }
-            }
+            else _memory[i] = value;
         }
+    }
 
-        /// <summary>
-        /// Fills memory from the 0th byte to the length of data.
-        /// </summary>
-        /// <param name="data">The set of opcodes to put in the initial memory.</param>
-        public void SetInitialMemory(ushort[] data)
+    /// <summary>
+    /// Pushes a ushort onto the stack.
+    /// </summary>
+    /// <param name="value"></param>
+    public void Push(ushort value)
+    {
+        _stack[_registers.SP] = value;
+        _registers.SP--;
+
+        _registers.StackFrameSize++;
+    }
+
+    /// <summary>
+    /// Pops a ushort value off the stack.
+    /// </summary>
+    /// <returns></returns>
+    public ushort Pop()
+    {
+        _registers.StackFrameSize--;
+
+        _registers.SP++;
+        return _stack[_registers.SP];
+    }
+
+    /// <summary>
+    /// Reads the top ushort on the stack.
+    /// </summary>
+    /// <returns></returns>
+    public ushort Peek()
+    {
+        return _stack[_registers.SP + 1];
+    }
+
+    /// <summary>
+    /// Pushes a stack frame onto the stack.
+    /// The amount of arguments should have been pushed before calling this function.
+    /// </summary>
+    public void PushStackFrame()
+    {
+        Push(_registers.A);
+        Push(_registers.B);
+        Push(_registers.C);
+        Push(_registers.D);
+        Push(_registers.E);
+        Push(_registers.X);
+        Push(_registers.Y);
+        Push(_registers.Z);
+
+        Push(_registers.Flags);
+        Push(_registers.PC);
+        Push((ushort)(_registers.StackFrameSize + 1));
+
+        _registers.FP = _registers.SP;
+        _registers.StackFrameSize = 0;
+    }
+
+    /// <summary>
+    /// Restores the previous stack frame.
+    /// </summary>
+    public void PopStackFrame()
+    {
+        _registers.SP = _registers.FP;
+
+        _registers.StackFrameSize = Pop();
+        var previousStackFrameSize = _registers.StackFrameSize;
+
+        _registers.PC = Pop();
+        _registers.Flags = Pop();
+
+        _registers.Z = Pop();
+        _registers.Y = Pop();
+        _registers.X = Pop();
+        _registers.E = Pop();
+        _registers.D = Pop();
+        _registers.C = Pop();
+        _registers.B = Pop();
+        _registers.A = Pop();
+
+        var numberOfArguments = Pop();
+        for (int i = 0; i < numberOfArguments; i++)
         {
-            for (ushort i = 0; i < data.Length; i++)
-            {
-                _memory[i] = data[i];
-            }
+            Pop();
         }
 
-        public void SetSubroutineAtAddress(ushort offset, ushort[] data)
-        {
-            for (ushort i = 0; i < data.Length; i++)
-            {
-                _memory[i + offset] = data[i];
-            }
-        }
+        _registers.FP += previousStackFrameSize;
     }
 }

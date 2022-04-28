@@ -13,18 +13,12 @@ namespace IkarosPC
 
         private ushort _stackFrameSize;
 
-        private readonly ushort _topOfStack;
-
-        public ushort TopOfStack => _topOfStack;
-
         public Registers()
         {
             // Represents the 8 general-purpose registers plus the accumulator.
             _registers = new ushort[9];
             // $PC, $SP, $FP, $MBC, $RSC
             _specialRegisters = new ushort[5];
-
-            _topOfStack = 0xC000 - 1;
         }
 
         public void Reset()
@@ -38,8 +32,8 @@ namespace IkarosPC
             FP = 0;
 
             // Set stack to top of memory.
-            SP = _topOfStack;
-            FP = _topOfStack;
+            SP = Memory.STACK_SIZE;
+            FP = Memory.STACK_SIZE;
 
             // Reset stack frame pointer.
             StackFrameSize = 0;
@@ -107,15 +101,6 @@ namespace IkarosPC
             get => _specialRegisters[3];
             set => _specialRegisters[3] = value;
         }
-
-        // RAM switch controller
-        public ushort RSC
-        {
-            get => _specialRegisters[4];
-            set => _specialRegisters[4] = value;
-        }
-
-        
 
         // Tracks the size of the current stack frame. Should never be touched by the user. Shouldn't be used outside of Pop, Push, LoadState, and SaveState.
         public ushort StackFrameSize
