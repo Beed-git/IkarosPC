@@ -22,7 +22,7 @@ namespace IkarosPC.Tests.MiniProgramTests
             _registers = new Registers();
 
             _memory = new Memory(_registers);
-            _cpu = new CPU(_memory, _registers);
+            _cpu = new CPU(_registers, _memory);
         }
 
         [Test]

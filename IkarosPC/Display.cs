@@ -44,7 +44,7 @@ namespace IkarosPC
             window.Display();
         }
 
-        public byte[] ConvertScreenToSFML()
+        private byte[] ConvertScreenToSFML()
         {
             var screen = _gpu.BuildDisplay();
 

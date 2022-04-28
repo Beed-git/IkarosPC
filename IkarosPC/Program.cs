@@ -36,7 +36,7 @@ namespace IkarosPC
 
             // X offset
             // -2
-            _memory[0xFF00] = 0xFFFE;
+            _memory[0xFF00] = 14;
             // Y offset
             _memory[0xFF01] = 4;
 
@@ -46,10 +46,27 @@ namespace IkarosPC
                 for (int y = 0; y < 16; y++)
                 {
                     _memory[(ushort)(tile + i + y * 16)] = (ushort)(0xF00F + i * 0x100 + y * 0x10);
-                    _memory[(ushort)(tile + 0x100 + i + y * 16)] = (ushort)(i % 2 > 0 && y % 2 == 1 ||
-                                                                            i % 2 == 0 && y % 2 == 0 
-                                                                            ? 0xF25F : 0x52FF);
+                    _memory[(ushort)(tile + 0x100 + i + y * 16)] = 0x7B3F;
                 }
+
+            _memory[(ushort)(tile + 0x100 + 3)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 16 * 1)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 3 + 16 * 1)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 1 + 16 * 2)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 3 + 16 * 2)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 13 + 16 * 4)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 13 + 16 * 5)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 15 + 16 * 5)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 4 + 16 * 8)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 2 + 16 * 9)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 4 + 16 * 9)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 9 + 16 * 13)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 7 + 16 * 14)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 9 + 16 * 14)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 12 + 16 * 14)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 7 + 16 * 15)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 9 + 16 * 15)] = 0x362F;
+            _memory[(ushort)(tile + 0x100 + 11 + 16 * 15)] = 0x362F;
 
             _registers.RSC = 0;
 
