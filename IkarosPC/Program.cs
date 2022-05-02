@@ -1,10 +1,4 @@
-﻿namespace IkarosPC;
+﻿using IkarosPC;
 
-class Program
-{
-    static void Main(string[] args)
-    {
-        var pc = new PC();
-        pc.Run();
-    }
-}
+var window = new EmuWindow();
+window.Start();

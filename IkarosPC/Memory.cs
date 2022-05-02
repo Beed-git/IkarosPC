@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IkarosPC;
+﻿namespace IkarosPC;
 
 public class Memory
 {

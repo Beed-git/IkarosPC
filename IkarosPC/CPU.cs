@@ -2,6 +2,9 @@
 
 public partial class CPU
 {
+    // 4mhz clock.
+    public const int CLOCKS_PER_SECOND = 4000000;
+
     private readonly Memory _memory;
     private readonly Registers _registers;
 
