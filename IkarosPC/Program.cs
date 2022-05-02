@@ -1,4 +1,5 @@
 ﻿using IkarosPC;
 
-var window = new EmuWindow();
+var pc = new PC();
+var window = new EmuWindow(pc);
 window.Start();

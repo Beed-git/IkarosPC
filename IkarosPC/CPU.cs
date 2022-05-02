@@ -5,32 +5,23 @@ public partial class CPU
     // 4mhz clock.
     public const int CLOCKS_PER_SECOND = 4000000;
 
-    private readonly Memory _memory;
-    private readonly Registers _registers;
-
-    private bool _stopped;
-
-    public bool Stopped => _stopped;
-
     public CPU(Registers registers, Memory memory)
     {
-        _registers = registers;
-        _memory = memory;
+        Registers = registers;
+        Memory = memory;
 
-        _registers.Reset();
+        Registers.Reset();
 
-        _stopped = false;
+        Stopped = true;
     }
 
-    public void Reset()
-    {
-        _registers.Reset();
-        // _memory.Reset();
-    }
+    public Memory Memory { get; init; }
+    public Registers Registers { get; init; }
+    public bool Stopped { get; private set; }
 
     public void Step()
     {
-        if (_stopped)
+        if (Stopped)
             return;
 
         var opcode = GetImmediate16();
@@ -41,8 +32,8 @@ public partial class CPU
     // Instruction helpers
     public ushort GetImmediate16()
     {
-        var immediate = _memory[_registers.PC];
-        _registers.PC++;
+        var immediate = Memory[Registers.PC];
+        Registers.PC++;
 
         return immediate;
     }

@@ -24,7 +24,7 @@ public partial class CPU
             // e.g. STOP
             case 0x01:
                 {
-                    _stopped = true;
+                    Stopped = true;
                 }
                 break;
             // Pushs the value of a register on the stack.
@@ -34,7 +34,7 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    _memory.Push(_registers[rX]);
+                    Memory.Push(Registers[rX]);
                 }
                 break;
             // Pushs an immediate value on the stack.
@@ -44,7 +44,7 @@ public partial class CPU
                 {
                     var immediate = GetImmediate16();
 
-                    _memory.Push(immediate);
+                    Memory.Push(immediate);
                 }
                 break;
             // Pops the value of a register off the stack.
@@ -54,7 +54,7 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    _registers[rX] = _memory.Pop();
+                    Registers[rX] = Memory.Pop();
                 }
                 break;
             // Calls a subroutine from a register
@@ -62,10 +62,10 @@ public partial class CPU
             // e.g. CALL $X:
             case 0x05:
                 {
-                    _memory.PushStackFrame();
+                    Memory.PushStackFrame();
 
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
-                    _registers.PC = _registers[rX];
+                    Registers.PC = Registers[rX];
                 }
                 break;
             // Calls a subroutine from an immediate value. 
@@ -76,9 +76,9 @@ public partial class CPU
                     var immediate = GetImmediate16();
 
                     // Save state to stack
-                    _memory.PushStackFrame();
+                    Memory.PushStackFrame();
 
-                    _registers.PC = immediate;
+                    Registers.PC = immediate;
                 }
                 break;
             // Returns from a subroutine.
@@ -86,7 +86,7 @@ public partial class CPU
             // e.g. RET
             case 0x07:
                 {
-                    _memory.PopStackFrame();
+                    Memory.PopStackFrame();
                 }
                 break;
             // Moves the value of a general register into a special register.
@@ -97,7 +97,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _registers.Special[rY] = _registers[rX];
+                    Registers.Special[rY] = Registers[rX];
                 }
                 break;
             // Moves the value of a special register into a general register.
@@ -108,7 +108,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _registers[rY] = _registers.Special[rX];
+                    Registers[rY] = Registers.Special[rX];
                 }
                 break;
             //
@@ -123,7 +123,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _registers[rY] = _registers[rX];
+                    Registers[rY] = Registers[rX];
                 }
                 break;
             // Moves an immediate value into a specified register.
@@ -134,7 +134,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _registers[rX] = immediate;
+                    Registers[rX] = immediate;
                 }
                 break;
             // Moves a value in memory specified by a register into another register.
@@ -145,7 +145,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _registers[rY] = _memory[_registers[rX]];
+                    Registers[rY] = Memory[Registers[rX]];
                 }
                 break;
             // Moves a value in memory specified by an immediate value into a register.
@@ -156,7 +156,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _registers[rX] = _memory[immediate];
+                    Registers[rX] = Memory[immediate];
                 }
                 break;
             // Moves a value from a register into memory specified by another register.
@@ -167,7 +167,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _memory[_registers[rY]] = _registers[rX];
+                    Memory[Registers[rY]] = Registers[rX];
                 }
                 break;
             // Stores an immediate value in memory specified by a register.
@@ -178,7 +178,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _memory[_registers[rX]] = immediate;
+                    Memory[Registers[rX]] = immediate;
                 }
                 break;
             // Moves a value from a register into memory specified by an immediate.
@@ -189,7 +189,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _memory[immediate] = _registers[rX];
+                    Memory[immediate] = Registers[rX];
                 }
                 break;
             // Moves an immediate value into memory specified by an immediate value.
@@ -200,7 +200,7 @@ public partial class CPU
                     var immediate = GetImmediate16();
                     var address = GetImmediate16();
 
-                    _memory[address] = immediate;
+                    Memory[address] = immediate;
                 }
                 break;
             // Moves a value from memory specified by a register into another memory location specified by another register.
@@ -211,7 +211,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    _memory[_registers[rY]] = _memory[_registers[rX]];
+                    Memory[Registers[rY]] = Memory[Registers[rX]];
                 }
                 break;
             // Moves a value in memory specified by a register into a memory location specified by an immediate value.
@@ -222,7 +222,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _memory[immediate] = _memory[_registers[rX]];
+                    Memory[immediate] = Memory[Registers[rX]];
                 }
                 break;
             // Moves a value in memory specified by an immediate value into a memory location specified by a register.
@@ -233,7 +233,7 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var immediate = GetImmediate16();
-                    _memory[_registers[rX]] = _memory[immediate];
+                    Memory[Registers[rX]] = Memory[immediate];
                 }
                 break;
             // Moves a value in memory specified by an immediate value into a memory location specified by another immediate value.
@@ -244,7 +244,7 @@ public partial class CPU
                     var immediate = GetImmediate16();
                     var address = GetImmediate16();
 
-                    _memory[address] = _memory[immediate];
+                    Memory[address] = Memory[immediate];
                 }
                 break;
             // Store a value in memory at an immediate value + a signed offset.
@@ -257,9 +257,9 @@ public partial class CPU
 
                     var offset = (short)GetImmediate16();
 
-                    var address = (ushort)(offset + _registers[rY]);
+                    var address = (ushort)(offset + Registers[rY]);
 
-                    _memory[address] = _registers[rX];
+                    Memory[address] = Registers[rX];
                 }
                 break;
             // Stores a value in a register at an immediate value + a signed offset.
@@ -272,9 +272,9 @@ public partial class CPU
 
                     var offset = (short)GetImmediate16();
 
-                    var address = (ushort)(offset + _registers[rX]);
+                    var address = (ushort)(offset + Registers[rX]);
 
-                    _registers[rY] = _memory[address];
+                    Registers[rY] = Memory[address];
                 }
                 break;
 
@@ -291,14 +291,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] + _registers[rY];
+                    var result = Registers[rX] + Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result > ushort.MaxValue;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result > ushort.MaxValue;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Adds the value of the first register and an immediate value and stores the result in $ACC.
@@ -311,14 +311,14 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    var result = _registers[rX] + immediate;
+                    var result = Registers[rX] + immediate;
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result > ushort.MaxValue;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result > ushort.MaxValue;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)(_registers[rX] + immediate);
+                    Registers.Accumulator = (ushort)(Registers[rX] + immediate);
                 }
                 break;
             // Subtracts the value of the first register from the second and stores the result in $ACC.
@@ -330,14 +330,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] - _registers[rY];
+                    var result = Registers[rX] - Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result < 0;
-                    _registers.Negative = true;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result < 0;
+                    Registers.Negative = true;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Subtracts the value of the register from the immediate value and stores the result in $ACC.
@@ -350,14 +350,14 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    var result = _registers[rX] - immediate;
+                    var result = Registers[rX] - immediate;
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result < 0;
-                    _registers.Negative = true;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result < 0;
+                    Registers.Negative = true;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Subtracts the immediate value from the value of the register and stores the result in $ACC.
@@ -370,14 +370,14 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    var result = immediate - _registers[rX];
+                    var result = immediate - Registers[rX];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result < 0;
-                    _registers.Negative = true;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result < 0;
+                    Registers.Negative = true;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Increments the value of the register and stores the result back in the register.
@@ -388,14 +388,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] + 1;
+                    var result = Registers[rX] + 1;
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result > ushort.MaxValue;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result > ushort.MaxValue;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers[rX] = (ushort)result;
+                    Registers[rX] = (ushort)result;
                 }
                 break;
             // Decrements the value of the register and stores the result back in the register.
@@ -406,14 +406,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] - 1;
+                    var result = Registers[rX] - 1;
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result < 0;
-                    _registers.Negative = true;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result < 0;
+                    Registers.Negative = true;
+                    Registers.Signed = false;
 
-                    _registers[rX] = (ushort)result;
+                    Registers[rX] = (ushort)result;
                 }
                 break;
 
@@ -430,14 +430,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] * _registers[rY];
+                    var result = Registers[rX] * Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = result > ushort.MaxValue;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = result > ushort.MaxValue;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
 
@@ -458,14 +458,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] & _registers[rY];
+                    var result = Registers[rX] & Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical ands a register and an immediate and stores the result in $ACC.
@@ -476,14 +476,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] & GetImmediate16();
+                    var result = Registers[rX] & GetImmediate16();
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical ors two registers and stores the result in $ACC.
@@ -495,14 +495,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] | _registers[rY];
+                    var result = Registers[rX] | Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical ors a register and an immediate and stores the result in $ACC.
@@ -513,14 +513,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] | GetImmediate16();
+                    var result = Registers[rX] | GetImmediate16();
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical xors two registers and stores the result in $ACC.
@@ -532,14 +532,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] ^ _registers[rY];
+                    var result = Registers[rX] ^ Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical xors a register and an immediate and stores the result in $ACC.
@@ -550,14 +550,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] ^ GetImmediate16();
+                    var result = Registers[rX] ^ GetImmediate16();
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical nots a register and stores the result in $ACC.
@@ -568,14 +568,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = ~_registers[rX];
+                    var result = ~Registers[rX];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical left shift a register by another register and stores the result in $ACC.
@@ -587,14 +587,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var result = _registers[rX] << _registers[rY];
+                    var result = Registers[rX] << Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = (result & 0x10000) > 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = (result & 0x10000) > 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical left shift a register by an immediate and stores the result in $ACC.
@@ -605,14 +605,14 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var result = _registers[rX] << GetImmediate16();
+                    var result = Registers[rX] << GetImmediate16();
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = (result & 0x10000) > 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = (result & 0x10000) > 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical right shift a register by another register and stores the result in $ACC.
@@ -624,15 +624,15 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
-                    var result = x >> _registers[rY];
+                    var x = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
+                    var result = x >> Registers[rY];
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Logical right shift a register by an immediate and stores the result in $ACC.
@@ -643,15 +643,15 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var x = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+                    var x = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
                     var result = x >> GetImmediate16() ;
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = false;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = false;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register left by another register and store the result in $ACC.
@@ -663,11 +663,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var amount = (_registers[rY] % 0x10);
+                    var amount = (Registers[rY] % 0x10);
 
-                    var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
+                    var result = (Registers[rX] << amount) | (Registers[rX] >> (0x10 - amount));
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register left by an immediate value and store the result in $ACC.
@@ -680,9 +680,9 @@ public partial class CPU
 
                     var amount = (GetImmediate16() % 0x10);
 
-                    var result = (_registers[rX] << amount) | (_registers[rX] >> (0x10 - amount));
+                    var result = (Registers[rX] << amount) | (Registers[rX] >> (0x10 - amount));
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register right by another register and store the result in $ACC.
@@ -694,11 +694,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var amount = (_registers[rY] % 0x10);
+                    var amount = (Registers[rY] % 0x10);
 
-                    var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
+                    var result = (Registers[rX] >> amount) | (Registers[rX] << (0x10 - amount));
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register right by an immediate value and store the result in $ACC.
@@ -711,9 +711,9 @@ public partial class CPU
 
                     var amount = (GetImmediate16() % 0x10);
 
-                    var result = (_registers[rX] >> amount) | (_registers[rX] << (0x10 - amount));
+                    var result = (Registers[rX] >> amount) | (Registers[rX] << (0x10 - amount));
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register left through carry by another register and store the result in $ACC.
@@ -725,17 +725,17 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var amount = _registers[rY] % 0x11;
-                    var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+                    var amount = Registers[rY] % 0x11;
+                    var number = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
 
                     var result = (number << amount) | (number >> (0x11 - amount));
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = (result & 0x10000) > 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = (result & 0x10000) > 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register left through carry by an immediate value and store the result in $ACC.
@@ -747,16 +747,16 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var amount = GetImmediate16() % 0x11;
-                    var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+                    var number = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
 
                     var result = (number << amount) | (number >> (0x11 - amount));
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Carry = (result & 0x10000) > 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Carry = (result & 0x10000) > 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register right through carry by another register and store the result in $ACC.
@@ -768,22 +768,22 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var amount = _registers[rY] % 0x11;
-                    var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+                    var amount = Registers[rY] % 0x11;
+                    var number = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
 
                     var result = (number >> amount) | (number << (0x11 - amount));
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
                     // Convaluted way of setting carry bit. Refactor this in the future.
                     if (amount != 0)
                     {
-                        _registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                        Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
                     }
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
             // Rotate a register right through carry by an immediate value and store the result in $ACC.
@@ -795,21 +795,21 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
                     var amount = GetImmediate16() % 0x11;
-                    var number = _registers[rX] + (_registers.Carry ? 0x10000 : 0);
+                    var number = Registers[rX] + (Registers.Carry ? 0x10000 : 0);
 
                     var result = (number >> amount) | (number << (0x11 - amount));
 
-                    _registers.Zero = ((ushort)result) == 0;
-                    _registers.Negative = false;
-                    _registers.Signed = false;
+                    Registers.Zero = ((ushort)result) == 0;
+                    Registers.Negative = false;
+                    Registers.Signed = false;
 
                     // Convaluted way of setting carry bit. Refactor this in the future.
                     if (amount != 0)
                     {
-                        _registers.Carry = (number >> (amount - 1) & 0x1) > 0;
+                        Registers.Carry = (number >> (amount - 1) & 0x1) > 0;
                     }
 
-                    _registers.Accumulator = (ushort)result;
+                    Registers.Accumulator = (ushort)result;
                 }
                 break;
 
@@ -824,7 +824,7 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    _registers.PC = _registers[rX];
+                    Registers.PC = Registers[rX];
                 }
                 break;
             // Jump to an address specified by register.
@@ -832,7 +832,7 @@ public partial class CPU
             // e.g. JMP i16
             case 0x71:
                 {
-                    _registers.PC = GetImmediate16();
+                    Registers.PC = GetImmediate16();
                 }
                 break;
             // Jump to an adress at a specified address plus a signed offset.
@@ -844,9 +844,9 @@ public partial class CPU
 
                     var immediate = (short)GetImmediate16();
 
-                    var address = (ushort)(_registers[rX] + immediate);
+                    var address = (ushort)(Registers[rX] + immediate);
 
-                    _registers.PC = address;
+                    Registers.PC = address;
                 }
                 break;
             // Jump to an immediate value if two registers are equal.
@@ -859,9 +859,9 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    if (_registers[rX] == _registers[rY])
+                    if (Registers[rX] == Registers[rY])
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -873,9 +873,9 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    if (_registers[rX] == 0)
+                    if (Registers[rX] == 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -888,9 +888,9 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    if (_registers[rX] == 0)
+                    if (Registers[rX] == 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -904,9 +904,9 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    if (_registers[rX] != _registers[rY])
+                    if (Registers[rX] != Registers[rY])
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -918,9 +918,9 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    if (_registers[rX] != 0)
+                    if (Registers[rX] != 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -933,9 +933,9 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    if (_registers[rX] != 0)
+                    if (Registers[rX] != 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -947,11 +947,11 @@ public partial class CPU
                     var flag = (byte)((opcode & 0x00F0) >> 4);
                     var rX = (byte)(opcode & 0x000F);
 
-                    var result = ((_registers.Flags >> flag) & 0x1) > 0;
+                    var result = ((Registers.Flags >> flag) & 0x1) > 0;
 
                     if (result)
                     {
-                        _registers.PC = _registers[rX];
+                        Registers.PC = Registers[rX];
                     }
                 }
                 break;
@@ -964,11 +964,11 @@ public partial class CPU
 
                     var immediate = GetImmediate16();
 
-                    var result = ((_registers.Flags >> flag) & 0x1) > 0;
+                    var result = ((Registers.Flags >> flag) & 0x1) > 0;
 
                     if (result)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -980,11 +980,11 @@ public partial class CPU
                     byte flag = (byte)((opcode & 0x00F0) >> 4);
                     byte rX = (byte)(opcode & 0x000F);
 
-                    var result = ((_registers.Flags >> flag) & 0x1) > 0;
+                    var result = ((Registers.Flags >> flag) & 0x1) > 0;
 
                     if (!result)
                     {
-                        _registers.PC = _registers[rX];
+                        Registers.PC = Registers[rX];
                     }
                 }
                 break;
@@ -997,11 +997,11 @@ public partial class CPU
                     
                     var immediate = GetImmediate16();
 
-                    var result = ((_registers.Flags >> flag) & 0x1) > 0;
+                    var result = ((Registers.Flags >> flag) & 0x1) > 0;
 
                     if (!result)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1018,14 +1018,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
-                    var y = (short)_registers[rY];
+                    var x = (short)Registers[rX];
+                    var y = (short)Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x > y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1037,11 +1037,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     if (x > 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -1052,13 +1052,13 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     var immediate = GetImmediate16();
 
                     if (x > 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1070,14 +1070,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
-                    var y = (short)_registers[rY];
+                    var x = (short)Registers[rX];
+                    var y = (short)Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x < y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1089,11 +1089,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     if (x < 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -1104,13 +1104,13 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     var immediate = GetImmediate16();
 
                     if (x < 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1122,14 +1122,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
-                    var y = (short)_registers[rY];
+                    var x = (short)Registers[rX];
+                    var y = (short)Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x >= y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1141,11 +1141,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     if (x >= 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -1156,13 +1156,13 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     var immediate = GetImmediate16();
 
                     if (x >= 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1174,14 +1174,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
-                    var y = (short)_registers[rY];
+                    var x = (short)Registers[rX];
+                    var y = (short)Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x <= y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1193,11 +1193,11 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     if (x <= 0)
                     {
-                        _registers.PC = _registers[rY];
+                        Registers.PC = Registers[rY];
                     }
                 }
                 break;
@@ -1208,13 +1208,13 @@ public partial class CPU
                 {
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
 
-                    var x = (short)_registers[rX];
+                    var x = (short)Registers[rX];
 
                     var immediate = GetImmediate16();
 
                     if (x <= 0)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1230,14 +1230,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = _registers[rX];
-                    var y = _registers[rY];
+                    var x = Registers[rX];
+                    var y = Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x > y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1249,14 +1249,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = _registers[rX];
-                    var y = _registers[rY];
+                    var x = Registers[rX];
+                    var y = Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x < y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1268,14 +1268,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = _registers[rX];
-                    var y = _registers[rY];
+                    var x = Registers[rX];
+                    var y = Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x >= y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;
@@ -1287,14 +1287,14 @@ public partial class CPU
                     byte rX = (byte)((opcode & 0x00F0) >> 4);
                     byte rY = (byte)(opcode & 0x000F);
 
-                    var x = _registers[rX];
-                    var y = _registers[rY];
+                    var x = Registers[rX];
+                    var y = Registers[rY];
 
                     var immediate = GetImmediate16();
 
                     if (x <= y)
                     {
-                        _registers.PC = immediate;
+                        Registers.PC = immediate;
                     }
                 }
                 break;

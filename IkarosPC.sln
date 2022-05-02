@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IkarosPC", "IkarosPC\Ikaros
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IkarosAssembler", "Assembler\IkarosAssembler.csproj", "{85C35016-352D-43FA-BF94-5408791D2F3F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Veldrid.ImGui", "Veldrid.ImGui\Veldrid.ImGui.csproj", "{9E1A9A41-F41E-41DC-B91C-375F05397B34}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{85C35016-352D-43FA-BF94-5408791D2F3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85C35016-352D-43FA-BF94-5408791D2F3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85C35016-352D-43FA-BF94-5408791D2F3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1A9A41-F41E-41DC-B91C-375F05397B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1A9A41-F41E-41DC-B91C-375F05397B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1A9A41-F41E-41DC-B91C-375F05397B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1A9A41-F41E-41DC-B91C-375F05397B34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

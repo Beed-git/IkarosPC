@@ -16,7 +16,7 @@ internal class PC
         _cpu = new CPU(_registers, _memory);
     }
 
-    public async void Step()
+    public void Step()
     {
         if (!_cpu.Stopped)
         {
