@@ -326,6 +326,9 @@ namespace Veldrid
             // Store our identifier
             io.Fonts.SetTexID(_fontAtlasID);
 
+            // Enable docking.
+            io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+
             _fontTexture?.Dispose();
             _fontTexture = gd.ResourceFactory.CreateTexture(TextureDescription.Texture2D(
                 (uint)width,

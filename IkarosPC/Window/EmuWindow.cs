@@ -8,7 +8,7 @@ using Veldrid.Sdl2;
 using Veldrid.SPIRV;
 using Veldrid.StartupUtilities;
 
-namespace IkarosPC;
+namespace IkarosPC.Window;
 
 internal class EmuWindow
 {
@@ -44,6 +44,8 @@ internal class EmuWindow
 
         _frameTimer.Start();
 
+        var imGuiPanels = new ImGuiEmulatorPanels(_pc);
+
         bool hasSimulatedFrame = false;
 
         while (_window.Exists)
@@ -64,15 +66,8 @@ internal class EmuWindow
                 var snapshot = _window.PumpEvents();
                 _imgui.Update(FRAME_TIME, snapshot);
 
-                if (ImGui.Begin("Window"))
-                {
-                    ImGui.Text("Hello");
-                    if (ImGui.Button("Quit"))
-                    {
-                        _window.Close();
-                    }
-                }
-                ImGui.End();
+                imGuiPanels.MainWindow();
+                imGuiPanels.RegistersWindow();
 
                 Draw();
 
@@ -121,10 +116,10 @@ internal class EmuWindow
             _window.Width,
             _window.Height);
 
-        _window.Resized += () =>
-        {
-            _imgui.WindowResized(_window.Width, _window.Height);
-        };
+        //_window.Resized += () =>
+        //{
+        //    _imgui.WindowResized(_window.Width, _window.Height);
+        //};
 
         _window.KeyDown += Window_KeyDown;
         _window.KeyUp += Window_KeyUp;

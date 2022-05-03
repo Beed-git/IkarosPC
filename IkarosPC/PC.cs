@@ -1,26 +1,24 @@
-﻿using System;
-
-namespace IkarosPC;
+﻿namespace IkarosPC;
 
 internal class PC
 {
-    private CPU _cpu;
-    private Registers _registers;
-    private Memory _memory;
+    public CPU CPU { get; init; }
+    public Registers Registers { get; init; }
+    public Memory Memory {  get; init;  }
 
     public PC()
     {
-        _registers = new Registers();
-        _memory = new Memory(_registers);
+        Registers = new Registers();
+        Memory = new Memory(Registers);
 
-        _cpu = new CPU(_registers, _memory);
+        CPU = new CPU(Registers, Memory);
     }
 
     public void Step()
     {
-        if (!_cpu.Stopped)
+        if (!CPU.Stopped)
         {
-            _cpu.Step();
+            CPU.Step();
         }
     }
 }

@@ -21,9 +21,6 @@ public partial class CPU
 
     public void Step()
     {
-        if (Stopped)
-            return;
-
         var opcode = GetImmediate16();
 
         HandleOpcode(opcode);

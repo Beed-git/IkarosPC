@@ -13,8 +13,8 @@ public class Registers
     {
         // Represents the 8 general-purpose registers plus the accumulator.
         _registers = new ushort[9];
-        // $PC, $SP, $FP, $MBC, $RSC
-        _specialRegisters = new ushort[5];
+        // $PC, $SP, $FP, $MBC
+        _specialRegisters = new ushort[4];
     }
 
     public void Reset()
